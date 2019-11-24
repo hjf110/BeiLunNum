@@ -1,0 +1,1688 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>北仑数字应急</title>
+    <link rel="stylesheet" href="https://www.jq22.com/jquery/animate-3.1.0.min.css">
+    <link rel="stylesheet" href="../../node_modules/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../static/css/aa.css">
+    <link rel="stylesheet" href="../../static/js/layuiadmin/layui/css/layui.css">
+
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=D5c091c2edbc6edfbccd9bf7194bf5f8"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/library/AreaRestriction/1.2/src/AreaRestriction_min.js"></script>
+    <script src="../../node_modules/jquery/dist/jquery.min.js" type="text/javascript"></script>
+    <script src="../../node_modules/vue/dist/vue.js"></script>
+    <style>
+        .dirtyNoClick {
+            float: right;
+            background-color: #dc7f18;
+            width: 160px;
+            height: 50px;
+            line-height: 50px;
+            margin: 4px;
+            text-align: center;
+            color: white;
+            z-index: 1;
+            opacity: 1;
+        }
+
+        .dirtyClick {
+            float: right;
+            background-color: #30AACF;
+            width: 160px;
+            height: 50px;
+            line-height: 50px;
+            margin: 4px;
+            text-align: center;
+            color: white;
+            z-index: 1;
+            opacity: 1;
+        }
+
+
+        .realTimeNoClick {
+            background-color: #dc7f18;
+        }
+
+        .realTimeClick {
+            background-color: #30AACF;
+        }
+
+
+        .el-dialog-div {
+            height: 72vh;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+
+        /*.bg-purple {*/
+        /*    background: #d3dce6;*/
+        /*}*/
+        .grid-content {
+            min-height: 250px;
+        }
+
+        .el-col-bottom {
+            margin-bottom: 10px;
+        }
+
+        .layui-layer-title {
+            border-bottom: none;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" style="display: none;">
+        <symbol id="wave">
+            <path d="M420,20c21.5-0.4,38.8-2.5,51.1-4.5c13.4-2.2,26.5-5.2,27.3-5.4C514,6.5,518,4.7,528.5,2.7c7.1-1.3,17.9-2.8,31.5-2.7c0,0,0,0,0,0v20H420z"></path>
+            <path d="M420,20c-21.5-0.4-38.8-2.5-51.1-4.5c-13.4-2.2-26.5-5.2-27.3-5.4C326,6.5,322,4.7,311.5,2.7C304.3,1.4,293.6-0.1,280,0c0,0,0,0,0,0v20H420z"></path>
+            <path d="M140,20c21.5-0.4,38.8-2.5,51.1-4.5c13.4-2.2,26.5-5.2,27.3-5.4C234,6.5,238,4.7,248.5,2.7c7.1-1.3,17.9-2.8,31.5-2.7c0,0,0,0,0,0v20H140z"></path>
+            <path d="M140,20c-21.5-0.4-38.8-2.5-51.1-4.5c-13.4-2.2-26.5-5.2-27.3-5.4C46,6.5,42,4.7,31.5,2.7C24.3,1.4,13.6-0.1,0,0c0,0,0,0,0,0l0,20H140z"></path>
+        </symbol>
+    </svg>
+
+
+    <div id="app">
+        <!--    头工具条-->
+        <div style="display: none;" id="toolbar" v-pre>
+            <div class="layui-btn-group">
+                <button type="button" lay-event="add" class="layui-btn layui-btn-primary layui-btn-sm">
+                    添加
+                </button>
+            </div>
+        </div>
+
+        <!--    行工具条-->
+        <script type="text/html" id="barDemo" v-pre>
+            <a class="layui-btn layui-btn-xs" lay-event="detail">修改定位点</a>
+        </script>
+
+
+        <!--父容器-->
+        <div class="main" id="container_search">
+        </div>
+        <!--logo头-->
+
+        <div>
+            <transition name="rightInP12" enter-active-class="animated bounceIn " leave-active-class="animated bounceOut">
+                <div class="top" v-show="setting.isShowCz">
+                    北仑 "数字应急"
+                </div>
+            </transition>
+            <!--左侧-->
+            <!-- <transition name="rightIn" enter-active-class="animated bounceInDown " leave-active-class="animated bounceOutUp">
+                <div class="left" v-show="showOption.isLeftShow">
+                    <div class="menu_yellow" title="首页">
+                        首页
+                    </div>
+                    <el-popover ref="popover2" :visible-arrow="false" placement="right" trigger="hover">
+                        <div class="left_1" style="position:absolute;left:15px;top:0;width:164px; min-height:100px;background-color:#161c40;opacity:0.8;box-shadow: -1px 0px 5px 5px #161c40;">
+                            <div @click="dwGL" class="menu_1_yellow" title="点位管理">
+                                点位管理
+                            </div>
+                            <div @click="dirtyGL(true)" class="menu_1_yellow" title="污染源管理">
+                                污染源管理
+                            </div>
+                        </div>
+                    </el-popover>
+                    <div v-popover:popover2 @mouseenter="mouseIn($event)" @mouseleave="mouseOut($event)" class="menu_yellow" title="基础数据">
+                        基础数据
+                    </div>
+                    <el-popover ref="popover3" :visible-arrow="false" placement="right" trigger="hover">
+                        <div class="left_1" style="position:absolute;left:15px;top:0;width:164px; min-height:100px;background-color:#161c40;opacity:0.8;box-shadow: -1px 0px 5px 5px #161c40;">
+                            <div @click="showIndexEarlyWarning" class="menu_1_yellow" title="指标预警">
+                                指标预警
+                            </div>
+                            <div @click="blueSky.show = true" class="menu_1_yellow" title="蓝天数完成度">
+                                蓝天数完成度
+                            </div>
+                            <div @click="siteAnalysisShow" class="menu_1_yellow" title="站点分析">
+                                站点分析
+                            </div>
+                            <div class="menu_1_yellow" title="多站对比">
+                                多站对比
+                            </div>
+                            <div @click="showSiteRanking" class="menu_1_yellow" title="站点排名">
+                                站点排名
+                            </div>
+                        </div>
+                    </el-popover>
+                    <div v-popover:popover3 @mouseenter="mouseIn($event)" @mouseleave="mouseOut($event)" class="menu_yellow" title="目标管理">
+                        目标管理
+                    </div>
+                    <el-popover ref="popover4" :visible-arrow="false" placement="right" trigger="hover">
+                        <div class="left_1" style="position:absolute;left:15px;top:0;width:164px; min-height:100px;background-color:#161c40;opacity:0.8;box-shadow: -1px 0px 5px 5px #161c40;">
+                            <div class="menu_1_yellow" title="点位管理">
+                                子菜单1
+                            </div>
+                            <div class="menu_1_yellow" title="污染源管理">
+                                子菜单2
+                            </div>
+                        </div>
+                    </el-popover>
+                    <div v-popover:popover4 class="menu_yellow" @mouseenter="mouseIn($event)" @mouseleave="mouseOut($event)" title="系统管理">
+                        系统管理
+                    </div>
+                    <div class="left_right" @click="showAndHideLeft(showOption.isLeftShow2)" title="点击缩进">
+                    </div>
+                </div>
+            </transition>
+            <transition name="rightOut" enter-active-class="animated bounceInRight " leave-active-class="animated bounceOutRight">
+                <div class="left_left" title="点击展开" v-show="showOption.isLeftShow2" @click="showAndHideLeft(showOption.isLeftShow2)" style="display:none;">
+                </div>
+            </transition> -->
+            <!--左侧二级菜单div-->
+
+            <!--右侧-->
+
+            <transition name="rightIn" enter-active-class="animated bounceInDown " leave-active-class="animated bounceOutUp">
+                <div class="left-bottom" v-show="showOption.isRightShow">
+                    <div class="menu_blue_right" @mouseenter="mouseIn2($event,108)" @mouseleave="mouseOut2($event,108)" @click="getData($event,'o3',108)" title="PM10">
+                        危化安全企业
+                    </div>
+                    <div class="menu_yellow_right" @click="getData($event,'pm25',121)" @mouseenter="mouseIn2($event,121)" @mouseleave="mouseOut2($event,121)" title="PM2.5">
+                        安全生产企业
+                    </div>
+
+                    <div class="menu_yellow_right" @mouseenter="mouseIn2($event,129)" @click="getData($event,'windSpeed',129)" @mouseleave="mouseOut2($event,129)">
+                        防汛抗旱救灾
+                    </div>
+                    <div class="menu_yellow_right" @mouseenter="mouseIn2($event,130)" @click="getData($event,'windDirection',130)" @mouseleave="mouseOut2($event,130)">
+                        避灾安置场所
+                    </div>
+                    <div class="menu_yellow_right" @mouseenter="mouseIn2($event,126)" @click="getData($event,'temp',126)" @mouseleave="mouseOut2($event,126)">
+                        不稳定斜坡
+                    </div>
+                    <div class="menu_yellow_right" @mouseenter="mouseIn2($event,128)" @click="getData($event,'humidity',128)" @mouseleave="mouseOut2($event,128)">
+                        地质灾害隐患
+                    </div>
+                    <div class="left_right" @click="showAndHideRight(showOption.isRightShow2)" title="点击缩进">
+                    </div>
+                </div>
+            </transition>
+
+            <transition v-show="!setting.isShowCz" name="rightOut" enter-active-class="animated bounceInLeft " leave-active-class="animated bounceOutLeft">
+                <div class="left_left_bottom" v-show="showOption.isRightShow2" @click="showAndHideRight(showOption.isRightShow2)" title="点击展开">
+                </div>
+            </transition>
+            <!--底部-->
+
+
+            <!-- <transition name="rightInP12"
+                    enter-active-class="animated bounceIn "
+                    leave-active-class="animated bounceOut">
+            <div v-show="setting.isShowCz"
+                 style="position:absolute;bottom:0px; height:60px;width:98%; left:1%;  background:url(../../static/js/index/img/bottom_back_color.png) repeat;">
+                <div
+                        @click="realTimeClick(!realTime.is)"
+                        :class="realTime.is?'realTimeClick':'realTimeNoClick'"
+                        style="float:left;width:50px;height:50px; line-height:50px; margin:4px; text-align:center;color:white; z-index:1;opacity:1;">
+                    实时
+                </div>
+                <div v-show="hour24.show"
+                     style="float:left; background-color:#dc7f18;width:100px;height:50px; line-height:50px; margin:4px; text-align:center;color:white; z-index:1;opacity:1;cursor:pointer;"
+                     @click="hour24_Show">
+                    24小时变化
+                </div>
+                <div v-show="!hour24.show"
+                     style="float:left;margin-left:14px;width:300px;height:50px;line-height:50px; text-align:center;color:white; z-index:1;opacity:1;cursor:pointer;">
+                
+                    <el-slider style="margin-top: 10px;" v-model="hour24.percentage"></el-slider>
+                </div>
+
+
+                <div @click="showDirtyPoint(!setting.dirtyClick)"
+                     :class='[setting.dirtyClick?"dirtyClick":"dirtyNoClick"]'>
+                    污染源
+                </div>
+                <div @click="addLabel(setting.dianWeiShow)" :class='[!setting.dianWeiShow?"dirtyClick":"dirtyNoClick"]'
+                     style="float:right; width:120px;height:50px; line-height:50px; margin:4px; text-align:center;color:white; z-index:1;opacity:1;">
+                    点位
+                </div>
+
+                <div class="r_in" style="position:absolute;top:-35px; left:50%;  margin-left: -102px;">
+                    <div class="box">
+                        <div class="percent">
+                            <div class="percentNum" id="count">{{blueSky.data.complete}}</div>
+                            <div class="percentB">/{{blueSky.data.total}}</div>
+                        </div>
+                        <div id="water" class="water">
+                            <svg viewBox="0 0 560 20" class="water_wave water_wave_back">
+                                <use xlink:href="#wave"></use>
+                            </svg>
+                            <svg viewBox="0 0 560 20" class="water_wave water_wave_front">
+                                <use xlink:href="#wave"></use>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </transition> -->
+        </div>
+
+        <!--    污染源管理弹出层-->
+        <!--    <el-drawer-->
+        <!--            title="污染源管理"-->
+        <!--            :visible.sync="pop.dirty"-->
+        <!--            direction="rtl"-->
+        <!--            :modal="false"-->
+        <!--            :modal-append-to-body="false"-->
+        <!--            :wrapperClosable="false"-->
+        <!--            :before-close="hideDirtyGL"-->
+        <!--            size="30%">-->
+        <!--        -->
+        <!--    </el-drawer>-->
+
+        <div id="dirty" class="hide" style="padding: 10px;">
+            <table id="dirtyTable" lay-filter="dirtyTable"></table>
+        </div>
+
+
+        <!--    点位管理的弹出层-->
+        <!--    <el-drawer-->
+        <!--            title="定位管理"-->
+        <!--            :visible.sync="pop.clearDw"-->
+        <!--            direction="rtl"-->
+        <!--            :modal="false"-->
+        <!--            :modal-append-to-body="false"-->
+        <!--            :wrapperClosable="false"-->
+        <!--            :before-close="hideDwGL"-->
+        <!--            size="30%">-->
+        <!--        <div style="padding: 10px;">-->
+        <!--            <table id="clearDwTable" lay-filter="clearDwTable"></table>-->
+        <!--        </div>-->
+        <!--    </el-drawer>-->
+
+        <div id="clearDw" style="padding: 10px;">
+            <table id="clearDwTable" lay-filter="clearDwTable"></table>
+        </div>
+
+
+        <!--站点分析弹出层-->
+        <el-dialog title="提示" :visible.sync="pop.siteAnalysis" width="80%" top="3vh">
+            <div class="el-dialog-div">
+                <el-row :gutter="5">
+                    <el-col v-for="(item,idx) in echartsSetting.zdfxOption" :key="idx" class="el-col-bottom" :span="8">
+                        <div :id='"ech"+idx' class="grid-content bg-purple"></div>
+                    </el-col>
+                </el-row>
+            </div>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="pop.siteAnalysis = false">取 消</el-button>
+                <el-button type="primary" @click="pop.siteAnalysis = false">确 定</el-button>
+            </div>
+        </el-dialog>
+
+
+        <!--指标预警弹出层-->
+        <el-dialog title="指标预警" :visible.sync="indexEarlyWarning.show" width="80%" top="3vh">
+            <div class="el-dialog-div" style="padding: 15px;">
+                <el-table :data="indexEarlyWarning.list" border style="width: 100%">
+                    <el-table-column prop="key" label="指标项">
+                    </el-table-column>
+                    <el-table-column prop="assessmentValue" label="考核值">
+                    </el-table-column>
+                    <el-table-column prop="currentValue" label="当前值">
+                    </el-table-column>
+                    <el-table-column prop="lastYearSyncValue" label="去年同期值">
+                    </el-table-column>
+                    <el-table-column prop="yearOnYear" label="同比">
+                    </el-table-column>
+                </el-table>
+            </div>
+            <!--        <div slot="footer" class="dialog-footer">-->
+            <!--            <el-button @click="pop.siteAnalysis = false">取 消</el-button>-->
+            <!--            <el-button type="primary" @click="pop.siteAnalysis = false">确 定</el-button>-->
+            <!--        </div>-->
+        </el-dialog>
+
+
+        <!--蓝天数完成度-->
+        <el-dialog title="蓝天数完成度" :visible.sync="blueSky.show" width="60%">
+            <div style="padding:30px;">
+                <table class="layui-table">
+                    <tr>
+                        <td>总目标值</td>
+                        <td>{{blueSky.data.total}}</td>
+                        <td>距离目标</td>
+                        <td>{{blueSky.data.distance}}</td>
+                    </tr>
+                    <tr>
+                        <td>完成值</td>
+                        <td>{{blueSky.data.complete}}</td>
+                        <td>完成率</td>
+                        <td>{{(blueSky.data.completerate*100).toFixed(1)}}%</td>
+                    </tr>
+                    <tr>
+                        <td>预计值</td>
+                        <td>{{blueSky.data.predicate}}</td>
+                        <td>预计完成率值</td>
+                        <td>{{blueSky.data.predicaterate*100}}%</td>
+                    </tr>
+                    <tr>
+                        <td>阶段目标值</td>
+                        <td>{{blueSky.data.step}}</td>
+                        <td>阶段完成率</td>
+                        <td>{{blueSky.data.steperate*100}}%</td>
+                    </tr>
+                </table>
+            </div>
+            <!--        <div slot="footer" class="dialog-footer">-->
+            <!--            <el-button @click="pop.siteAnalysis = false">取 消</el-button>-->
+            <!--            <el-button type="primary" @click="pop.siteAnalysis = false">确 定</el-button>-->
+            <!--        </div>-->
+        </el-dialog>
+
+        <!--站点排名弹出层-->
+        <el-dialog title="站点排名" :visible.sync="siteRanking.show" width="60%">
+            <div style="padding: 15px;">
+                <div class="layui-card">
+                    <div class="layui-card-body">
+                        <div class="layui-form-item">
+                            <div class="layui-input-inline">
+                                <el-select v-model="siteRanking.type" placeholder="请选择排名条件">
+                                    <el-option label="24小時" value="1"></el-option>
+                                    <el-option label="7天" value="2"></el-option>
+                                    <el-option label="近一月" value="3"></el-option>
+                                </el-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-card-body">
+                        <el-table :data="siteRanking.data" border style="width: 100%">
+                            <el-table-column prop="aqi" label="AQI">
+                            </el-table-column>
+
+                            <el-table-column prop="o3" label="臭氧">
+                            </el-table-column>
+
+                            <el-table-column prop="pm25" label="PM2.5">
+                            </el-table-column>
+
+                        </el-table>
+                    </div>
+                </div>
+
+            </div>
+            <!--        <div slot="footer" class="dialog-footer">-->
+            <!--            <el-button @click="pop.siteAnalysis = false">取 消</el-button>-->
+            <!--            <el-button type="primary" @click="pop.siteAnalysis = false">确 定</el-button>-->
+            <!--        </div>-->
+        </el-dialog>
+
+
+        <!--    <div id="aa"  class="el-dialog-div hide">-->
+        <!--        <el-row :gutter="5">-->
+        <!--            <el-col v-for="(item,idx) in echartsSetting.zdfxOption" :key="idx" class="el-col-bottom" :span="8">-->
+        <!--                <div :id='"ech"+idx' class="grid-content bg-purple"></div>-->
+        <!--            </el-col>-->
+        <!--        </el-row>-->
+        <!--    </div>-->
+
+
+        <!--    <el-dialog title="污染源管理" :visible.sync="pop.dirty">-->
+        <!--        <table id="dirtyTable" lay-filter="dirtyTable"></table>-->
+        <!--    </el-dialog>-->
+
+    </div>
+</body>
+<script src="../../static/js/layuiadmin/layui/layui.all.js"></script>
+<script src="../../node_modules/element-ui/lib/index.js"></script>
+<script src="../../node_modules/echarts/dist/echarts.js"></script>
+<script src="../../config/api.js"></script>
+<script src="../../static/js/tool/tool.js"></script>
+<script>
+    const table = layui.table;
+
+    let vm = new Vue({
+        el: "#app",
+        data() {
+            return {
+                realTime: {
+                    is: false, //是否实时显示
+                    time: 5, //实时刷新时间(单位为秒)
+                    Interval: "", //定时器索引
+                },
+                nowdataType: "o3",
+                showOption: {
+                    isRightShow: true,
+                    isRightShow2: false,
+                    isLeftShow: true,
+                    isLeftShow2: false
+                },
+                setting: {
+                    dianWeiShow: true,
+                    isShowCz: true,
+                    dirtyClick: false, //显示污染源是否点击
+                    addDirty: false,
+                    updateDirty: false,
+                    clickType: 108, //点击了右边哪个按钮
+                    colorType: true
+                },
+                dirtyForm: {
+                    id: "" //id
+                },
+                pop: {
+                    layuiIdx: "",
+                    siteAnalysis: false, //站点分析的显示与隐藏
+                    dirty: false, //污染源管理的显示与影藏
+                    clearDw: false, //点位管理的显示与隐藏
+
+                },
+                //点位与地图信息----------------------
+                map: "",
+                marker: new Array(),
+                infoWindow: new Array(),
+                point: new Array(),
+                myIcon: new Array(),
+                label: new Array(),
+                info: [], //所有点位的经纬度信息
+
+                marker2: new Array(),
+                infoWindow2: new Array(),
+                point2: new Array(),
+                myIcon2: new Array(),
+                info2: [], //所有点位的经纬度信息
+                //-------------------------------------
+
+
+                //图表参数----------------------
+                echartsSetting: {
+                    zdfxOption: [{
+                            xAxis: {
+                                type: 'category',
+                                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                            },
+                            yAxis: {
+                                type: 'value'
+                            },
+                            series: [{
+                                data: [820, 932, 901, 934, 1290, 1330, 1320],
+                                type: 'line'
+                            }]
+                        },
+                        {
+                            xAxis: {
+                                type: 'category',
+                                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                            },
+                            yAxis: {
+                                type: 'value'
+                            },
+                            series: [{
+                                data: [820, 932, 901, 934, 1290, 1330, 1320],
+                                type: 'line'
+                            }]
+                        },
+                        {
+                            xAxis: {
+                                type: 'category',
+                                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                            },
+                            yAxis: {
+                                type: 'value'
+                            },
+                            series: [{
+                                data: [820, 932, 901, 934, 1290, 1330, 1320],
+                                type: 'line'
+                            }]
+                        },
+                        {
+                            xAxis: {
+                                type: 'category',
+                                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                            },
+                            yAxis: {
+                                type: 'value'
+                            },
+                            series: [{
+                                data: [820, 932, 901, 934, 1290, 1330, 1320],
+                                type: 'line'
+                            }]
+                        },
+                        {
+                            xAxis: {
+                                type: 'category',
+                                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                            },
+                            yAxis: {
+                                type: 'value'
+                            },
+                            series: [{
+                                data: [820, 932, 901, 934, 1290, 1330, 1320],
+                                type: 'line'
+                            }]
+                        },
+                        {
+                            xAxis: {
+                                type: 'category',
+                                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                            },
+                            yAxis: {
+                                type: 'value'
+                            },
+                            series: [{
+                                data: [820, 932, 901, 934, 1290, 1330, 1320],
+                                type: 'line'
+                            }]
+                        },
+                        {
+                            xAxis: {
+                                type: 'category',
+                                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                            },
+                            yAxis: {
+                                type: 'value'
+                            },
+                            series: [{
+                                data: [820, 932, 901, 934, 1290, 1330, 1320],
+                                type: 'line'
+                            }]
+                        },
+                        {
+                            xAxis: {
+                                type: 'category',
+                                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                            },
+                            yAxis: {
+                                type: 'value'
+                            },
+                            series: [{
+                                data: [820, 932, 901, 934, 1290, 1330, 1320],
+                                type: 'line'
+                            }]
+                        },
+                        {
+                            xAxis: {
+                                type: 'category',
+                                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                            },
+                            yAxis: {
+                                type: 'value'
+                            },
+                            series: [{
+                                data: [820, 932, 901, 934, 1290, 1330, 1320],
+                                type: 'line'
+                            }]
+                        },
+                        {
+                            xAxis: {
+                                type: 'category',
+                                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                            },
+                            yAxis: {
+                                type: 'value'
+                            },
+                            series: [{
+                                data: [820, 932, 901, 934, 1290, 1330, 1320],
+                                type: 'line'
+                            }]
+                        }
+                    ]
+                },
+                //-----------------------------
+
+                //指标预警-----------------------------
+                indexEarlyWarning: {
+                    show: false, //是否显示弹出层
+                    list: [], //指标预警列表
+                },
+                //蓝天完成数---------------------------------------
+                blueSky: {
+                    show: false, //是否显示蓝天数弹窗
+                    data: { //数据
+                        complete: 0, //完成值
+                        completerate: 0, //完成率
+                        distance: 0, //距离目标
+                        predicate: 0, //预计值
+                        predicaterate: 0, //预计完成率
+                        step: 0, //阶段目标值
+                        steperate: 0, //阶段完成率
+                        total: 0, //总目标值
+                    }
+                },
+                //站点排名------------------------------------------
+                siteRanking: {
+                    selectOption: [
+                        { name: "24小時", val: 1 },
+                        { name: "24小時", val: 2 },
+                    ],
+                    show: false, //站点排名的显示与隐藏
+                    type: "1", //站点排名的查询条件
+                    data: [], //数据
+                },
+                //多站对比----------------------------------------------
+                siteComparison: {
+                    show: false,
+                    dataOption: {}
+                },
+                //24小时轮播-----------------------------------------------
+                hour24: {
+                    show: true,
+                    percentage: 0,
+                    customColor: '#409eff',
+                    customColors: [
+                        { color: '#f56c6c', percentage: 20 },
+                        { color: '#e6a23c', percentage: 40 },
+                        { color: '#5cb87a', percentage: 60 },
+                        { color: '#1989fa', percentage: 80 },
+                        { color: '#6f7ad3', percentage: 100 }
+                    ]
+                }
+            }
+        },
+        methods: { //方法
+            //截取数字 num代表要截取的数字  type代表要截取几位数
+            cutOutNum(num) {
+                let list = (num + "").split("."); //根据点拆分成数组
+                if (list[1]) { //说明有小数点后面的数
+                    let a = "";
+                    if (list[0].length == 3) { //说明是三位数
+                        a = list[0];
+                    } else if (list[0].length == 2) { //说明是两位数,截取小数点后一位
+                        a = list[0];
+                        let b = ".";
+                        $.each(list[1].split(''), (idx, obj) => {
+                            if (idx == 0) {
+                                b = b + obj + "";
+                            }
+                        });
+                        a = a + b + "";
+
+                    } else if (list[0].length == 1) { //说明是一位数,截取小数点后两位
+                        a = list[0];
+                        let b = ".";
+                        $.each(list[1].split(''), (idx, obj) => {
+                            if (idx >= 0 && idx <= 1) {
+                                b = b + obj + "";
+                            }
+                        });
+                        a = a + b + "";
+                    }
+
+                    return a;
+                } else {
+                    return list[0];
+                }
+            },
+            //判断AQI颜色值
+            panDuanColor(num) {
+                let a;
+                if (num >= 0 && num <= 50) {
+                    a = "../../static/img/p1.png";
+                } else if (num > 50 && num <= 100) {
+                    a = "../../static/img/p2.png";
+                } else if (num > 100 && num <= 150) {
+                    a = "../../static/img/p3.png";
+                } else if (num > 150 && num <= 200) {
+                    a = "../../static/img/p4.png";
+                } else if (num > 200 && num <= 300) {
+                    a = "../../static/img/p5.png";
+                } else if (num > 300) {
+                    a = "../../static/img/p6.png";
+                }
+                return a;
+            },
+            // 根据经纬度获取标记点的索引值
+            getPointIndexByLatAndLng(lat, lng, list) {
+                let a;
+                $.each(list, (idx, obj) => {
+                    if (obj.lat == lat && obj.lng == lng) {
+                        a = idx;
+                    }
+                });
+                return a;
+            },
+            // 根据设备id获取标记点的索引值
+            getPointIndexByUnionid(unionid) {
+                let _this = this;
+                let a;
+                console.log("unionid-----", unionid);
+                $.each(_this.info, (idx, obj) => {
+                    console.log(obj);
+                    if (obj.unionid == unionid) {
+                        a = idx;
+                    }
+                });
+                console.log("得到的索引为-----", a);
+                return a;
+            },
+            showAndHideUi(type) {
+                this.setting.isShowCz = type;
+                this.showAndHideLeft(type);
+                this.showAndHideRight(type);
+                this.showOption.isRightShow2 = false;
+                this.showOption.isLeftShow2 = false;
+            },
+            showAndHideLeft(type) {
+                let _this = this;
+                console.log(type);
+                if (type) { //显示
+                    // console.log(111);
+                    _this.showOption.isLeftShow = true;
+                    _this.showOption.isLeftShow2 = false;
+                } else if (type == false) {
+                    _this.showOption.isLeftShow = false;
+                    _this.showOption.isLeftShow2 = true;
+                    // console.log( _this.showOption.isLeftShow2);
+                }
+            },
+            showAndHideRight(type) {
+                let _this = this;
+                console.log(type);
+                if (type) { //显示
+                    // console.log(111);
+                    _this.showOption.isRightShow = true;
+                    _this.showOption.isRightShow2 = false;
+                } else if (type == false) {
+                    _this.showOption.isRightShow = false;
+                    _this.showOption.isRightShow2 = true;
+                    // console.log( _this.showOption.isLeftShow2);
+                }
+            },
+            panduan(n1, n2) {
+                let a = (parseInt(n1) / parseInt(n2) * 100).toFixed(0);
+                // console.log("----------+++++++",a);
+                let b = "";
+                if (a >= 90 && a <= 100) {
+                    b = "c1";
+                } else if (a >= 80 && a < 90) {
+                    b = "c2";
+                } else if (a >= 70 && a < 80) {
+                    b = "c3";
+                } else if (a >= 60 && a < 70) {
+                    b = "c4";
+                } else if (a >= 50 && a < 60) {
+                    b = "c5";
+                } else if (a >= 40 && a < 50) {
+                    b = "c6";
+                } else if (a >= 30 && a < 40) {
+                    b = "c7";
+                } else if (a >= 20 && a < 30) {
+                    b = "c8";
+                } else {
+                    b = "c9";
+                }
+
+
+
+                var cnt = document.getElementById("count");
+                var water = document.getElementById("water");
+                water.style.transform = 'translate(0' + ',' + (100 - a) + '%)';
+
+
+
+
+
+
+
+
+                $(".r_c").addClass(b);
+                // $(".r_c").addClass(b);
+                $(".r_c").animate({
+                    height: a + "%"
+                }, 1000);
+
+            },
+            changeDate(num) {
+                let s = num + "";
+                let newNum;
+                let a = s.split(".")[0];
+                let b = s.split(".")[1];
+                // console.log();
+                if (b) { //有小数点
+                    newNum = s.substring(0, s.indexOf(".") + 2);
+                } else { //没有小数点
+                    newNum = s;
+                }
+                // let newNum =Math.round(parseInt(num)*100)/100;
+                console.log("131------,,,", newNum);
+            },
+            getBoundary(map_search) {
+                const _this = this;
+                var bdary = new BMap.Boundary();
+                bdary.get("宁波市北仑区", function(rs) { //获取行政区域
+                    map_search.clearOverlays(); //清除地图覆盖物
+                    var count = rs.boundaries.length; //行政区域的点有多少个
+                    if (count === 0) {
+                        alert('未能获取当前输入行政区域');
+                        return;
+                    }
+                    var pointArray = [];
+                    for (var i = 0; i < count; i++) {
+                        var ply = new BMap.Polygon(rs.boundaries[i], {
+                            strokeWeight: 4,
+                            strokeColor: "#fa1306",
+                            fillColor: "#0852c2",
+                            fillOpacity: 0.1
+                        }); //建立多边形覆盖物
+                        map_search.addOverlay(ply); //添加覆盖物
+                        pointArray = pointArray.concat(ply.getPath());
+                    }
+                    map_search.setViewport(pointArray); //调整视野，根据提供的地理区域或坐标设置地图视野，调整后的视野会保证包含提供的地理区域或坐标
+                    _this.addLabel(true); //添加文本标记
+                });
+
+                console.log("--------------");
+            },
+            //刷新污染源点位信息
+            pushDirtyPoint() {
+                if (this.setting.dirtyClick) { //如果页面上原来是显示污染源的就刷新一下污染源的信息
+                    this.showDirtyPoint(false); //清空
+                    this.showDirtyPoint(true); //刷新
+                }
+            },
+            // 显示与去掉污染源
+            showDirtyPoint(isShow) {
+                const _this = this;
+                let map_search = this.map;
+                if (isShow) {
+                    this.setting.dirtyClick = true;
+                    //------------------参数定义
+                    _this.marker2 = {};
+                    _this.infoWindow2 = {};
+                    _this.point2 = {};
+                    _this.myIcon2 = {};
+                    _this.info2 = [];
+
+
+                    ajaxSubmit({ limit: 500, page: 1 }, Api.airDirty.list, "post", res => {
+                        console.log("获得的值---", res);
+                        // 循环标记站点
+                        $.each(res.data, (idx, obj) => {
+                            _this.point2[idx] = new window.BMap.Point(obj.lon, obj.lat); //存入坐标
+                            _this.myIcon2[idx] = new BMap.Icon("../../static/img/w2.png", new BMap.Size(65, 45), {
+                                anchor: new BMap.Size(30, 45),
+                                imageSize: new BMap.Size(65, 45)
+                            }); //引用点图标文件
+                            _this.marker2[idx] = new BMap.Marker(_this.point2[idx], { icon: _this.myIcon2[idx] }); // 创建标注，为要查询的地方对应的经纬度
+                            //_this.label[idx] = new BMap.Label("23", {offset: new BMap.Size(10, 0)}); //创建点文字组件,文字内容和位置
+                            _this.infoWindow2[idx] = new BMap.InfoWindow('<p style="text-align:center;font-weight:bolder;color:red;">无污染源名称:' + obj.name + '</p>');
+                            _this.info2.push({ lat: obj.lat, lng: obj.lon });
+
+                            map_search.addOverlay(_this.marker2[idx]); //加入坐标点
+                            _this.marker2[idx].setAnimation(BMAP_ANIMATION_BOUNCE);
+                            setTimeout(() => {
+                                _this.marker2[idx].setAnimation(null);
+                            }, 1000);
+
+
+                            // //设置点文字组件统一样式
+                            // _this.label[idx].setStyle({
+                            //     color: "black",
+                            //     fontSize: "16px",
+                            //     height: "30px",
+                            //     lineHeight: "30px",
+                            //     fontWeight: "bolder",
+                            //     fontFamily: "微软雅黑",
+                            //     padding: "5px",
+                            //     backgroundColor: "none",
+                            //     opacity: "1",
+                            //     border: "none"
+                            //     //backgroundColor: "rgba(0, 0, 0, 0.4)";
+                            // });
+                            //_this.marker[idx].setLabel(_this.label[idx]); //将文字组添加到点坐标中
+
+                            _this.marker2[idx].addEventListener("click", function() {
+                                map_search.enableScrollWheelZoom();
+                                _this.marker2[idx].openInfoWindow(_this.infoWindow2[idx]);
+                            });
+
+
+                        });
+                        map_search.enableScrollWheelZoom(); //启用滚轮放大缩小，默认禁用
+                        map_search.enableContinuousZoom(); //启用地图惯性拖拽，默认禁用
+                        //限制显示区域
+                        var b = new BMap.Bounds(new BMap.Point(121.324514, 29.865837), new BMap.Point(121.693034, 30.076832));
+                        try {
+                            BMapLib.AreaRestriction.setBounds(map_search, b);
+                        } catch (e) {
+                            alert(e);
+                        }
+
+                    }, err => {
+
+                    });
+
+                } else {
+                    this.setting.dirtyClick = false;
+                    var allOverlay = map_search.getOverlays();
+                    // console.log(allOverlay);
+                    $.each(this.marker2, (idx, obj) => {
+                        // console.log(obj);
+                        $.each(allOverlay, (_idx, _obj) => {
+                            // console.log(_obj);
+                            if (_obj.point) {
+                                if (_obj.point.lat === obj.point.lat && _obj.point.lng === obj.point.lng) {
+                                    map_search.removeOverlay(_obj);
+                                }
+                            }
+                        })
+                    })
+
+                }
+
+            },
+            //刷新站点信息
+            pushClearPoint() {
+                this.addLabel(false);
+                this.addLabel(true);
+            },
+            //显示与去掉站点
+            addLabel(isShow) {
+                const _this = this;
+                let map_search = this.map;
+                //------------------参数定义
+                // var marker = _this.marker; //标记数组
+                // var infoWindow = _this.infoWindow; //标记内容窗口数组
+                // var point = _this.point; //标记坐标数组
+                // var myIcon = _this.myIcon; //标记图标数组
+                // var label = _this.label; //标记文字显示数组
+
+                if (isShow) {
+                    _this.setting.dianWeiShow = false;
+                    _this.marker = {};
+                    _this.infoWindow = {};
+                    _this.point = {};
+                    _this.myIcon = {};
+                    _this.label = {};
+                    _this.info = [];
+                    ajaxSubmit({ limit: 500, page: 1 }, "data.json", "get", res => {
+                        console.log("获得的值---", res);
+                        // 循环标记站点
+                        $.each(res.data, (idx, obj) => {
+
+                            _this.point[idx] = new window.BMap.Point(obj.lng, obj.lat); //存入坐标
+                            _this.myIcon[idx] = new BMap.Icon("../../static/img/weixiang.png", new BMap.Size(100, 80), {
+                                anchor: new BMap.Size(43, 53),
+                                imageSize: new BMap.Size(95, 55)
+                            }); //引用点图标文件
+                            _this.marker[idx] = new BMap.Marker(_this.point[idx], { icon: _this.myIcon[idx] }); // 创建标注，为要查询的地方对应的经纬度
+                            // _this.label[idx] = new BMap.Label(obj.name, { offset: new BMap.Size(-12, 0) }); //创建点文字组件,文字内容和位置
+                            let opts = {
+                                title: obj.name, // 信息窗口标题
+                                enableMessage: false, //设置允许信息窗发送短息
+                                message: ""
+                            }
+
+                            _this.infoWindow[idx] = new BMap.InfoWindow(' ', opts);
+                            _this.info.push({ unionid: obj.unionid, lat: obj.lat, lng: obj.lon });
+
+                            map_search.addOverlay(_this.marker[idx]); //加入坐标点
+
+                            _this.marker[idx].setAnimation(BMAP_ANIMATION_DROP);
+
+                            setTimeout(() => {
+                                // _this.marker[idx].setAnimation(null);
+                            }, 1000);
+
+                            //设置点文字组件统一样式
+                            // _this.label[idx].setStyle({
+                            //     marginTop: "5px",
+                            //     marginLeft: "50px",
+                            //     width: "200px",
+                            //     color: "white",
+                            //     fontSize: "10px",
+                            //     height: "12px",
+                            //     lineHeight: "12px",
+                            //     fontWeight: "bolder",
+                            //     fontFamily: "arial",
+                            //     padding: "5px",
+                            //     backgroundColor: "black",
+                            //     opacity: "0.6",
+                            //     border: "none",
+                            //     textAlign: "center"
+                            //     //backgroundColor: "rgba(0, 0, 0, 0.4)";
+                            // });
+                            //_this.marker[idx].setLabel(_this.label[idx]); //将文字组添加到点坐标中
+
+                            _this.marker[idx].addEventListener("click", function() {
+                                map_search.enableScrollWheelZoom();
+                                _this.marker[idx].openInfoWindow(_this.infoWindow[idx]);
+                            });
+
+
+                        });
+
+                        // _this.getNowData("o3");
+
+
+                        map_search.enableScrollWheelZoom(); //启用滚轮放大缩小，默认禁用
+                        map_search.enableContinuousZoom(); //启用地图惯性拖拽，默认禁用
+
+                    }, err => {
+
+                    });
+                } else {
+                    _this.setting.dianWeiShow = true;
+                    var allOverlay = map_search.getOverlays();
+                    // console.log(allOverlay);
+                    $.each(_this.marker, (idx, obj) => {
+                        // console.log(obj);
+                        $.each(allOverlay, (_idx, _obj) => {
+                            // console.log(_obj);
+                            if (_obj.point) {
+                                if (_obj.point.lat === obj.point.lat && _obj.point.lng === obj.point.lng) {
+                                    map_search.removeOverlay(_obj);
+                                }
+                            }
+                        })
+                    })
+
+                }
+
+
+            },
+            //获取实时数据
+            getNowData() {
+                let _this = this;
+                let type = _this.nowdataType;
+                ajaxSubmit({ type: type }, Api.data.info, "get", res => {
+                    console.log("获取的实时数据-=-=-=-", res.data);
+                    $.each(res.data, (idx, obj) => {
+                        let _idx = _this.getPointIndexByUnionid(obj.mn);
+                        console.log("索引是-----=-=-=-=--==--=-", _idx);
+                        if (_idx !== undefined) {
+                            if (type == "o3" || type == "pm25") {
+                                console.log("进入了-----------------------------------------");
+                                _this.label[_idx].setContent(_this.cutOutNum(obj[type].value));
+                                console.log(_this.myIcon[_idx]);
+                                _this.myIcon[_idx].setImageUrl(_this.panDuanColor(obj[type].i));
+                                _this.marker[_idx].setIcon(_this.myIcon[_idx]);
+                                console.log(_this.myIcon[_idx]);
+                            } else {
+                                _this.myIcon[_idx].setImageUrl(_this.panDuanColor(1));
+                                _this.marker[_idx].setIcon(_this.myIcon[_idx]);
+                                _this.label[_idx].setContent(_this.cutOutNum(obj[type]));
+                            }
+                        }
+                    });
+                }, err => {
+                    _this.$message.error(err);
+                })
+            },
+            setLabelContent(idx) { //设置点上的值
+                idx = 0;
+                console.log(this.label[0]);
+                this.label[2].setContent(44);
+            },
+            mouseIn2(e, type) {
+                e.target.className = "menu_blue_right";
+
+            },
+            mouseOut2(e, type) {
+                if (type != this.setting.clickType) {
+                    e.target.className = "menu_yellow_right";
+                }
+            },
+            mouseIn(e, type) {
+                e.target.className = "menu_blue";
+
+            },
+            mouseOut(e, type) {
+                e.target.className = "menu_yellow";
+            },
+            getData(e, type, idx) { //显示相应的值
+                // this.setting.colorType = true;
+                this.setting.clickType = idx;
+                $(".menu_blue_right").removeClass().addClass("menu_yellow_right");
+                e.target.className = "menu_blue_right";
+
+                console.log(this.label);
+
+                this.nowdataType = type;
+                // this.getNowData();
+
+
+            },
+            //鼠标在地图上的点击回调
+            getMapClick(e) {
+                // this.pop.layuiIdx.close();
+                // console.log(e);
+                console.log("纬度--", e.point.lat);
+                console.log("经度--", e.point.lng);
+                const _this = this;
+
+                //如果是添加污染源信息
+                if (this.setting.addDirty) {
+                    this.$prompt('请输入污染源名称', '添加污染源', {
+                        confirmButtonText: '确定添加',
+                        cancelButtonText: '取消',
+                    }).then(({ value }) => {
+                        ajaxSubmit({ lat: e.point.lat, lon: e.point.lng, name: value }, Api.airDirty.add, "post", res => {
+                            _this.$message.closeAll();
+                            _this.$message.success("添加成功");
+                            _this.pop.dirty = true;
+                            table.reload('dirtyTable');
+                            _this.setting.addDirty = false;
+                            // _this.showAndHideUi(true);
+                            _this.pushDirtyPoint(); //刷新污染源
+
+                        }, err => {
+                            _this.setting.addDirty = false;
+                            // _this.showAndHideUi(true);
+                            _this.pop.dirty = true;
+                            _this.$message.success(err);
+                        });
+
+                    }).catch(() => {
+                        // _this.showAndHideUi(true);
+                        this.pop.dirty = true;
+                        this.setting.addDirty = false;
+                        _this.$message.closeAll();
+                    });
+                }
+                //如果是更新污染源信息
+                if (this.setting.updateDirty) {
+                    this.$confirm('确认将此污染源定位到这里吗', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        ajaxSubmit({
+                            id: _this.dirtyForm.id,
+                            lat: e.point.lat,
+                            lon: e.point.lng
+                        }, Api.airDirty.update, "post", res => {
+                            _this.$message.closeAll();
+                            _this.$message.success("重新定位成功");
+                            _this.pop.dirty = true;
+                            table.reload('dirtyTable');
+                            _this.setting.updateDirty = false;
+                            // _this.showAndHideUi(true);
+                            _this.pushDirtyPoint(); //刷新污染源
+                            //setTimeout(()=>{ _this.$message.closeAll();},1000);
+
+                        }, err => {
+                            _this.setting.updateDirty = false;
+                            // _this.showAndHideUi(true);
+                            _this.pop.dirty = true;
+                            _this.$message.success(err);
+                        });
+
+
+                    }).catch(() => {
+                        // _this.showAndHideUi(true);
+                        this.pop.dirty = true;
+                        this.setting.updateDirty = false;
+                        _this.$message.closeAll();
+                    });
+
+
+                }
+
+
+            },
+            //*显示与隐藏污染源管理-----------
+            dirtyGL(type) {
+                const _this = this;
+                //隐藏定位
+                this.addLabel(false);
+                //显示污染源的点位
+                this.showDirtyPoint(false);
+                this.showDirtyPoint(true);
+                this.showAndHideUi(false); //隐藏ui
+
+                this.pop.dirty = true;
+
+
+                layer.open({
+                    type: 1,
+                    area: ['30%', '100%'],
+                    offset: 'r',
+                    anim: 1,
+                    shade: 0,
+                    content: $('#dirty'), //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                    end: function(index, layero) {
+                        _this.hideDirtyGL();
+                    }
+                });
+
+
+                // console.log(this.pop.dirty);
+                //  第一个实例
+                setTimeout(() => {
+                    table.render({
+                        elem: '#dirtyTable',
+                        height: 800,
+                        url: Api.airDirty.list //数据接口
+                            ,
+                        method: "post",
+                        page: true //开启分页
+                            ,
+                        cols: [
+                            [ //表头
+                                { title: '序号', type: "numbers" }, { field: 'id', title: 'ID', sort: true, hide: true }, { field: 'lat', title: '纬度' }, { field: 'lon', title: '经度' }, { field: 'name', title: '污染源名称', edit: 'text' }, { fixed: 'right', width: 150, align: 'center', toolbar: '#barDemo' }
+                            ]
+                        ],
+                        toolbar: "#toolbar"
+                    });
+                }, 100);
+
+
+            },
+            hideDirtyGL() {
+                console.log(1111111111111111111111111111111111111);
+                this.showAndHideUi(true); //显示ui
+                this.pop.dirty = false;
+                //显示点位
+                this.addLabel(false);
+                this.addLabel(true);
+                //影藏污染源的点位
+                this.showDirtyPoint(false);
+            },
+            //*----------------------------
+            //*显示与隐藏点位管理-------------
+            dwGL() {
+                let _this = this;
+                //显示点位
+                this.showDirtyPoint(false);
+                this.addLabel(false);
+                this.addLabel(true);
+                //显示污染源的点位
+                this.showAndHideUi(false); //隐藏ui
+                this.pop.clearDw = true;
+
+
+                layer.open({
+                    type: 1,
+                    area: ['30%', '100%'],
+                    offset: 'r',
+                    anim: 1,
+                    shade: 0,
+                    content: $('#clearDw'), //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                    end: function(index, layero) {
+                        _this.hideDwGL();
+                    }
+                });
+
+
+                // console.log(this.pop.dirty);
+                //  第一个实例
+                setTimeout(() => {
+                    table.render({
+                        elem: '#clearDwTable',
+                        height: 800,
+                        url: Api.airPosition.list //数据接口
+                            ,
+                        method: "post",
+                        page: true //开启分页
+                            ,
+                        cols: [
+                            [ //表头
+                                { title: '序号', type: "numbers" }, { field: 'id', title: 'ID', sort: true, hide: true }, { field: 'unionid', title: '设备id' }, { field: 'lat', title: '纬度' }, { field: 'lon', title: '经度' }
+                                //, {fixed: 'right', width: 150, align: 'center', toolbar: '#barDemo'}
+                            ]
+                        ],
+                        //  toolbar: "#toolbar"
+                    });
+                }, 100);
+            },
+            hideDwGL() {
+                console.log(1111111111111111111111111111111111111);
+                this.showAndHideUi(true); //显示ui
+                this.pop.clearDw = false;
+                //显示点位
+                this.addLabel(false);
+                this.addLabel(true);
+                //影藏污染源的点位
+                this.showDirtyPoint(false);
+            },
+            //*----------------------------
+            //显示站点分析图表
+            siteAnalysisShow() {
+                this.pop.siteAnalysis = true;
+                setTimeout(() => {
+                    $.each(this.echartsSetting.zdfxOption, (idx, obj) => {
+                        let myChart = echarts.init(document.getElementById('ech' + idx));
+                        myChart.setOption(obj);
+                    });
+                }, 1000);
+
+
+            },
+            /**
+             * 是否开启实时刷新
+             * @param type (true开启,false关闭)
+             */
+            realTimeClick(type) {
+                let _this = this;
+                _this.realTime.is = type;
+                if (type) { //打开定时器
+                    _this.realTime.Interval = setInterval(() => {
+                        _this.getNowData();
+                    }, _this.realTime.time * 1000);
+                } else { //关闭定时器
+                    clearInterval(_this.realTime.Interval)
+                }
+            },
+
+            //显示指标预警
+            showIndexEarlyWarning() {
+                let _this = this;
+                this.indexEarlyWarning.show = true; //显示弹窗
+                ajaxSubmit({}, Api.indexEarlyWarning.list, "get", res => {
+                    console.log(res);
+                    _this.indexEarlyWarning.list = res.data; //赋值数据
+                }, err => {
+                    _this.$message.error(err);
+                })
+            },
+            //获取蓝天数完成度的数据
+            getBlueSkyData() {
+                let _this = this;
+                ajaxSubmit({}, Api.blueSky.data, "get", res => {
+                    _this.blueSky.data = res.data; //赋值蓝天数数据
+                    _this.panduan(res.data.complete, res.data.total); //赋值蓝天数血瓶显示
+                }, err => {});
+            },
+            //获取站点排名的数据-------------------
+            getSiteRankingData() {
+                let _this = this;
+                ajaxSubmit({ timetype: _this.siteRanking.type }, Api.siteRanking.data, "get", res => {
+                    console.log(res);
+                    _this.siteRanking.data = res.data;
+                }, err => {
+                    _this.$message.error(err);
+                });
+            },
+            showSiteRanking() {
+                this.siteRanking.show = true;
+                this.getSiteRankingData();
+
+            },
+            //24小时轮播-------------------------------------
+            hour24_Show() {
+                this.hour24.show = false;
+                this.getHour24Data();
+            },
+            getHour24Data() {
+                let _this = this;
+                ajaxSubmit({}, Api.hour24.data, "get", res => {
+                    console.log(res);
+                    let data = res.data;
+                    $.each(_this.info, (idx, obj) => {
+                        if (data[obj.unionid + '']) {
+                            console.log("24小时的值---", data[obj.unionid + ''][_this.nowdataType + '']);
+                            let data24 = data[obj.unionid + ''][_this.nowdataType + '']; //24小时的值
+                            $.each(data24, (_idx, _obj) => {
+                                setTimeout(() => {
+                                    console.log("执行--------------------------", _obj.avg);
+                                    _this.label[_this.getPointIndexByUnionid(obj.unionid)].setContent(_this.cutOutNum(_obj.avg));
+                                }, (_idx + 1) * 1000)
+                            });
+                        }
+                    });
+
+                    let c = 0;
+                    let index = setInterval(() => {
+                        if (c < 24) {
+                            console.log("----------------++----", c);
+                            c++;
+                            _this.hour24.percentage = _this.hour24.percentage + 4.16666;
+                        } else {
+                            _this.pushClearPoint();
+                            _this.hour24.percentage = 0;
+                            _this.hour24.show = true;
+                            clearInterval(index);
+                        }
+                    }, 1000);
+
+
+                }, err => {})
+            }
+
+
+        },
+        watch: {
+            "siteRanking.type"(newVal, oldVal) {
+                this.getSiteRankingData();
+            }
+        },
+        mounted() {
+            const _this = this;
+            var map_search = new BMap.Map("container_search", {
+                mapType: BMAP_HYBRID_MAP,
+                minZoom: 12,
+                maxZoom: 30,
+                enableMapClick: false
+            });
+
+            var mapType1 = new BMap.MapTypeControl({
+                mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP, BMAP_SATELLITE_MAP],
+                anchor: BMAP_ANCHOR_TOP_LEFT
+            });
+            map_search.addControl(mapType1);
+
+            this.map = map_search;
+            map_search.enableScrollWheelZoom(); //启用滚轮放大缩小，默认禁用
+            map_search.enableContinuousZoom(); //启用地图惯性拖拽，默认禁用
+            //设置地图中心
+            // map_search.centerAndZoom(new BMap.Point(121.56168, 29.893093), 5);
+            var b = new BMap.Bounds(new BMap.Point(121.630954, 29.695737), new BMap.Point(122.200228, 30.017797));
+            try {
+                BMapLib.AreaRestriction.setBounds(map_search, b);
+            } catch (e) {
+                alert(e);
+            }
+
+
+
+
+
+            //监听地图点击事件
+            map_search.addEventListener("click", this.getMapClick);
+
+            setTimeout(function() {
+                _this.getBoundary(map_search);
+            }, 100);
+
+
+            //污染源管理模块------------------------------------------------------------------------
+
+
+            //_this.changeDate(num);
+            //监听事件头工具点击事件
+            table.on('toolbar(dirtyTable)', function(obj) {
+                var checkStatus = table.checkStatus(obj.config.id);
+                switch (obj.event) {
+                    case 'add':
+                        _this.pop.dirty = false;
+                        _this.setting.addDirty = true;
+                        _this.showAndHideUi(false);
+                        // _this.pop.layuiIdx=layer.msg('请在地图上鼠标左键选择污染源',{time:0,icon:0,offset: 't'});
+                        _this.pop.layuiIdx = _this.$message({
+                            message: '请在地图上鼠标左键选择污染源',
+                            type: 'warning',
+                            duration: 0
+                        });
+                        break;
+                }
+            });
+
+            //监听单元格编辑事件
+            table.on('edit(dirtyTable)', function(obj) { //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+                console.log(obj.value); //得到修改后的值
+                console.log(obj.data); //得到修改后的值
+                // console.log(obj.data); //得到修改后的值
+                _this.$confirm('是否更改此污染源名称', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+
+                    ajaxSubmit({ id: obj.data.id, name: obj.value }, Api.airDirty.update, "post", res => {
+                        _this.$message.success("污染源名称修改成功");
+                        table.reload('dirtyTable');
+                    }, err => {
+                        _this.$message.success(err);
+                    });
+
+                }).catch(() => {
+
+                });
+
+            });
+
+            //监听工具条
+            table.on('tool(dirtyTable)', function(obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+                var data = obj.data; //获得当前行数据
+                var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+                var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+                console.log(obj.data);
+
+                if (layEvent === 'detail') { //查看
+
+                    _this.pop.dirty = false;
+                    _this.setting.updateDirty = true;
+                    _this.showAndHideUi(false);
+                    // _this.pop.layuiIdx=layer.msg('请在地图上鼠标左键选择污染源',{time:0,icon:0,offset: 't'});
+                    _this.pop.layuiIdx = _this.$message({
+                        message: '请在地图上鼠标左键重新选择污染源',
+                        type: 'warning',
+                        duration: 0
+                    });
+
+
+                    //do somehing
+                    _this.dirtyForm.id = obj.data.id;
+                    _this.setting.updateDirty = true;
+                }
+            });
+
+
+            //监听行单击事件
+            table.on('row(dirtyTable)', function(obj) {
+                // console.log(obj.tr); //得到当前行元素对象
+                // console.log(obj.data) ;//得到当前行数据
+                //obj.del(); //删除当前行
+                //obj.update(fields) //修改当前行数据
+                let val = obj.data;
+                let idx = _this.getPointIndexByLatAndLng(val.lat, val.lon, _this.info2);
+                // 清空所有弹跳动画
+                $.each(_this.marker2, (idx, obj) => {
+                    obj.setAnimation(null);
+                });
+
+                //为该标记点添加弹跳动画
+                _this.marker2[idx].setAnimation(BMAP_ANIMATION_BOUNCE);
+                setTimeout(() => {
+                    _this.marker2[idx].setAnimation(null);
+                }, 3000);
+            });
+
+            //点位管理模块------------------------------------------------------------------------
+
+            //监听行单击事件
+            table.on('row(clearDwTable)', function(obj) {
+                // console.log(obj.tr); //得到当前行元素对象
+                // console.log(obj.data) ;//得到当前行数据
+                //obj.del(); //删除当前行
+                //obj.update(fields) //修改当前行数据
+                let val = obj.data;
+                let idx = _this.getPointIndexByLatAndLng(val.lat, val.lon, _this.info);
+                // 清空所有弹跳动画
+                $.each(_this.marker, (idx, obj) => {
+                    obj.setAnimation(null);
+                });
+
+                //为该标记点添加弹跳动画
+                _this.marker[idx].setAnimation(BMAP_ANIMATION_BOUNCE);
+                setTimeout(() => {
+                    _this.marker[idx].setAnimation(null);
+                }, 3000);
+            });
+
+
+            //获取蓝天数数据
+            // _this.getBlueSkyData();
+
+
+            //监听按键
+            document.onkeydown = function(e) {
+                let _key = window.event.keyCode;
+                // console.log(_key);
+                if (_key === 27) { //按下了ESC健
+                    // _this.login(1);
+                    if (_this.setting.addDirty || _this.setting.updateDirty) { //污染源管理的添加和更新
+                        _this.setting.addDirty = false; //重置状态
+                        _this.setting.updateDirty = false; //重置状态
+                        // _this.showAndHideUi(true);//显示ui
+                        //显示污染源管理的数据表格
+                        setTimeout(() => {
+                            _this.pop.dirty = true;
+                        }, 300);
+
+                    }
+
+
+                }
+            }
+
+
+        },
+    });
+</script>
+
+<script type="text/javascript">
+
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // console.log("百度地图坐标--------",bd_encrypt(121.621454,29.906076));
+        // //绑定右侧菜单缩进
+        // $(".right_right").click(function () {
+        //     $(".right").hide(1000);
+        //     $(".right_left").show(1000);
+        // });
+        // //绑定右侧菜单显示
+        // $(".right_left").on("click", function () {
+        //     $(".right").show(1000);
+        //     $(".right_left").hide(1000);
+        // });
+
+
+        // //绑定左侧菜单缩进
+        // $(".left_right").click(function () {
+        //     $(".left").hide(1000);
+        //     $(".left_left").show(1000);
+        // });
+        // //绑定左侧菜单显示
+        // $(".left_left").on("click", function () {
+        //     $(".left").show(1000);
+        //     $(".left_left").hide(1000);
+        // });
+
+
+        // $(".menu_yellow").hover(function () {
+        //     //alert('OK');
+        //     if ($(this).attr("title") == "基础数据") {
+        //         $(".left_1").css("display", "block");
+        //     } else {
+        //         $(".left_1").css("display", "none");
+        //     }
+        //     $(this).removeClass("menu_yellow");
+        //     $(this).addClass("menu_blue");
+        // }, function () {
+        //
+        //     $(this).removeClass("menu_blue");
+        //     $(this).addClass("menu_yellow");
+        // });
+
+
+        // $(".left_1").hover(function () {
+        //     $(this).css("display", "block");
+        //     $("div[title='基础数据']").removeClass("menu_yellow");
+        //     $("div[title='基础数据']").addClass("menu_blue");
+        //
+        // });
+
+    });
+</script>
+
+</html>

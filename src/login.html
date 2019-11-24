@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>后台管理登陆页面</title>
+<link rel="stylesheet" href="../static/css/login/style.css">
+<link rel="stylesheet" href="../node_modules/element-ui/lib/theme-chalk/index.css">
+<!-- <link rel="stylesheet" href="../node_modules/layui-src/dist/css/layui.css"> -->
+<script src="../node_modules/jquery/dist/jquery.min.js"></script>
+<script src="../node_modules/layui-src/dist/layui.all.js"></script>
+<script src="../node_modules/vue/dist/vue.min.js"></script>
+
+<style>
+   h1,p{
+	   color:white;
+   }
+</style>
+<body style="background: #73C5FF">
+
+    <div id="app" class="login-container" v-cloak>
+        <h1>交工项目管理后台</h1>
+
+        <div class="connect">
+            <p>欢迎使用</p>
+        </div>
+
+        <form id="loginForm">
+            <div>
+                <input type="text" name="username" class="username" placeholder="用户名" autocomplete="off" @keyup.enter="submit" v-model="form.username" />
+            </div>
+            <div>
+                <input type="password" name="password" class="password" autocomplete="off" placeholder="密码" @keyup.enter="submit" oncontextmenu="return false" onpaste="return false" v-model="form.password" />
+            </div>
+<!--            <button type="button" id="submit" @click="submit">登 陆</button>-->
+            <el-button style="margin-top: 25px;" type="primary" :loading = "subLoading"  @click.enter="submit" >{{subLoading?"登陆中...":"登录"}}</el-button>
+        </form>
+
+        <!-- <a href="register.html">
+		<button type="button" class="register-tis">还有没有账号？</button>
+	</a> -->
+
+    </div>
+
+
+</body>
+
+<script src="../node_modules/element-ui/lib/index.js"></script>
+<script src="../static/js/login/common.js"></script>
+<!--背景图片自动更换-->
+<script src="../static/js/login/supersized.3.2.7.min.js"></script>
+<script src="../static/js/login/supersized-init.js"></script>
+<!--表单验证-->
+<script src="../static/js/login/jquery.validate.min.js?var1.14.0"></script>
+
+<script src="../static/js/md5/jquery.md5.js"></script>
+<script src="../config/api.js"></script>
+<script src="../static/js/tool/tool.js"></script>
+
+
+<script>
+    let vm = new Vue({
+        el: "#app",
+        data() {
+            return {
+                subLoading:false,
+                form:{
+                    username: "", //用户名
+                    password: "" //密码
+                }
+
+            }
+        },
+        methods: {
+            submit() { //提交方法
+                const _this = this;
+                // console.log(_this.$data); //获得参数
+                if (!_this.form.username) {
+                    // layui.layer.msg("请输入用户名", { icon: 2, anim: 4 });
+                    _this.$message.error("请输入用户名");
+                } else if (!_this.form.password) {
+                    // layui.layer.msg("请输入密码", { icon: 2, anim: 4 });
+                    _this.$message.error("请输入密码");
+                }else{
+					_this.subLoading=true;
+					//登录
+                    ajaxSubmit({
+                        username: _this.form.username, //用户名
+                        password: toMD5(_this.form.password) //密码
+                    }, Api.login.in, "post", (res) => {
+                        console.log(res);
+                        sessionStorage.setItem("username",_this.form.username);
+                        sessionStorage.setItem("token", res.data.token);
+                        sessionStorage.setItem("workId", res.data.workerId);
+                        sessionStorage.setItem("peopleType", res.data.type);
+                        if (res.data.type==3){
+                            window.location.href = "./src/pc/index.html";
+                        } else{
+                            _this.subLoading=false;
+                            _this.$message.error("您不是管理员,没有权限进入系统");
+                        }
+
+                    }, (err) => {
+                        _this.subLoading=false;
+                        _this.$message.error(err);
+                    });
+				}
+
+            }
+        }
+    })
+</script>
+
+</html>

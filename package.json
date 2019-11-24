@@ -1,0 +1,33 @@
+{
+  "name": "jgProject",
+  "version": "1.0.0",
+  "description": "1. 搭建了登录页面和index页面",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hjf110/jgProject.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hjf110/jgProject/issues"
+  },
+  "homepage": "https://github.com/hjf110/jgProject#readme",
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "bootstrap-select": "^1.7.2",
+    "echarts": "^4.4.0",
+    "element-ui": "^2.12.0",
+    "jquery": "^1.12.4",
+    "layui-src": "^2.5.5",
+    "quill": "^1.3.7",
+    "vue": "^2.6.10",
+    "vue-quill-editor": "^3.0.6",
+    "wangeditor": "^3.1.1"
+  },
+  "devDependencies": {}
+}
