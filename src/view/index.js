@@ -552,7 +552,7 @@ let vm = new Vue({
                     // 循环标记站点
                     _this.dataList = res.rows;
                     $.each(res.rows, (idx, obj) => {
-                       let aa = bd_encrypt(obj.WZJD,obj.WZWD);
+                        let aa = bd_encrypt(obj.WZJD,obj.WZWD);
                         _this.point[idx] = new window.BMap.Point(obj.WZJD, obj.WZWD); //存入坐标
                         _this.myIcon[idx] = new BMap.Icon("../../static/img/weixiang.png", new BMap.Size(100, 80), {
                             anchor: new BMap.Size(43, 53),
