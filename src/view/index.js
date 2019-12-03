@@ -1,8 +1,11 @@
 const table = layui.table;
+const layer = layui.layer;
 let vm = new Vue({
     el: "#app",
     data() {
         return {
+            clickType: "Whqyxx", //点击按钮的类型 (默认为危化企业)
+            infoData: [],
             realTime: {
                 is: false, //是否实时显示
                 time: 5, //实时刷新时间(单位为秒)
@@ -533,6 +536,41 @@ let vm = new Vue({
             this.addLabel(false);
             this.addLabel(true);
         },
+        // 转换坐标
+        zbChange(lngStr, latStr) {
+            let lng = lngStr.replace("E", "");
+            let lat = latStr.replace("N", "");
+            lng = Number(lng.substring(-1, lng.indexOf("°"))) + Number(lng.substring(lng.indexOf("°") + 1, lng.indexOf("′"))) / 60 + Number(lng.substring(lng.indexOf("′") + 1, lng.indexOf("″"))) / 3600;
+            lat = Number(lat.substring(-1, lat.indexOf("°"))) + Number(lat.substring(lat.indexOf("°") + 1, lat.indexOf("′"))) / 60 + Number(lat.substring(lat.indexOf("′") + 1, lat.indexOf("″"))) / 3600;
+            // console.log("1-----------------------------------", lng, "-----", lat);
+            return [lng, lat]
+        },
+        getIcon() {
+            let cc = this.clickType;
+            let a;
+            if (cc == "Whqyxx") {
+                a = "../../static/img/img_1.png";
+            } else if (cc == "Bzazcs") {
+                a = "../../static/img/img_4.png";
+            } else if (cc == "Dzzhxx") {
+                a = "../../static/img/img_8.png";
+            } else if (cc == "Bwdxxp") {
+                a = "../../static/img/img_7.png";
+            } else if (cc == "Jydwxx") {
+                a = "../../static/img/img_6.png";
+            } else if (cc == "Slfhsj") {
+                a = "../../static/img/img_5.png";
+            }
+            return a;
+        },
+        toClickType(type, e, idx) {
+            $(".menu_blue_right").removeClass().addClass("menu_yellow_right");
+            this.setting.clickType = idx;
+            e.target.className = "menu_blue_right";
+            this.clickType = type;
+            //先刷新站点
+            this.pushClearPoint();
+        },
         //显示与去掉站点
         addLabel(isShow) {
             const _this = this;
@@ -545,6 +583,7 @@ let vm = new Vue({
             // var label = _this.label; //标记文字显示数组
 
             if (isShow) {
+
                 _this.setting.dianWeiShow = false;
                 _this.marker = {};
                 _this.infoWindow = {};
@@ -552,15 +591,41 @@ let vm = new Vue({
                 _this.myIcon = {};
                 _this.label = {};
                 _this.info = [];
-                ajaxSubmit({ limit: 500, page: 1 }, "data.json", "get", res => {
+                ajaxSubmit({ pageSize: 100, pageNo: 1 }, Api.typeList + _this.clickType, "get", res => {
                     console.log("获得的值---", res);
-                    // 循环标记站点
-                    $.each(res.data, (idx, obj) => {
 
-                        _this.point[idx] = new window.BMap.Point(obj.lng, obj.lat); //存入坐标
-                        _this.myIcon[idx] = new BMap.Icon("../../static/img/weixiang.png", new BMap.Size(100, 80), {
-                            anchor: new BMap.Size(43, 53),
-                            imageSize: new BMap.Size(95, 55)
+                    _this.infoData = [];
+                    _this.infoData = res.rows;
+
+                    // 循环标记站点
+                    $.each(res.rows, (idx, obj) => {
+                        let aa = "";
+                        let bb = "";
+                        let cccc = _this.clickType;
+                        if (cccc == "Whqyxx") {
+                            aa = coordtransform.wgs84togcj02(obj.WZJD, obj.WZWD);
+                            bb = coordtransform.gcj02tobd09(aa[0], aa[1]);
+                        } else if (cccc == "Bzazcs") {
+                            let dd = _this.zbChange(obj.JD, obj.WD);
+                            aa = coordtransform.wgs84togcj02(dd[0], dd[1]);
+                            bb = coordtransform.gcj02tobd09(aa[0], aa[1]);
+                        } else {
+                            let dd = _this.zbChange(obj.DJ, obj.BW);
+                            aa = coordtransform.wgs84togcj02(dd[0], dd[1]);
+                            bb = coordtransform.gcj02tobd09(aa[0], aa[1]);
+                        }
+
+
+
+
+                        console.log(aa);
+                        console.log(bb);
+                        // console.log(data);
+                        _this.point[idx] = new window.BMap.Point(bb[0], bb[1]); //存入坐标
+                        let iconGet = _this.getIcon()
+                        _this.myIcon[idx] = new BMap.Icon(iconGet, new BMap.Size(30, 40), {
+                            anchor: new BMap.Size(13, 42),
+                            imageSize: new BMap.Size(30, 40)
                         }); //引用点图标文件
                         _this.marker[idx] = new BMap.Marker(_this.point[idx], { icon: _this.myIcon[idx] }); // 创建标注，为要查询的地方对应的经纬度
                         // _this.label[idx] = new BMap.Label(obj.name, { offset: new BMap.Size(-12, 0) }); //创建点文字组件,文字内容和位置
@@ -602,10 +667,21 @@ let vm = new Vue({
                         //_this.marker[idx].setLabel(_this.label[idx]); //将文字组添加到点坐标中
 
                         _this.marker[idx].addEventListener("click", function() {
-                            map_search.enableScrollWheelZoom();
-                            _this.marker[idx].openInfoWindow(_this.infoWindow[idx]);
-                        });
+                            // map_search.enableScrollWheelZoom();
+                            // _this.marker[idx].openInfoWindow(_this.infoWindow[idx]);
+                            console.log( _this.infoData[idx].PC_URL);
+                            if (_this.clickType == "Whqyxx") {
+                                layer.open({
+                                    type: 2,
+                                    title: '信息',
+                                    shadeClose: true,
+                                    shade: 0.8,
+                                    area: ['90%', '90%'],
+                                    content:  _this.infoData[idx].PC_URL
+                                });
+                            }
 
+                        });
 
                     });
 
@@ -696,7 +772,7 @@ let vm = new Vue({
             console.log(this.label);
 
             this.nowdataType = type;
-            // this.getNowData();
+            this.getNowData();
 
 
         },
@@ -1007,9 +1083,9 @@ let vm = new Vue({
     mounted() {
         const _this = this;
         var map_search = new BMap.Map("container_search", {
-            mapType: BMAP_HYBRID_MAP,
-            minZoom: 12,
-            maxZoom: 30,
+            mapType: BMAP_NORMAL_MAP,
+            // minZoom: 12,
+            // maxZoom: 30,
             enableMapClick: false
         });
 
@@ -1024,12 +1100,12 @@ let vm = new Vue({
         map_search.enableContinuousZoom(); //启用地图惯性拖拽，默认禁用
         //设置地图中心
         // map_search.centerAndZoom(new BMap.Point(121.56168, 29.893093), 5);
-        var b = new BMap.Bounds(new BMap.Point(121.630954, 29.695737), new BMap.Point(122.200228, 30.017797));
-        try {
-            BMapLib.AreaRestriction.setBounds(map_search, b);
-        } catch (e) {
-            alert(e);
-        }
+        // var b = new BMap.Bounds(new BMap.Point(121.630954, 29.695737), new BMap.Point(122.200228, 30.017797));
+        // try {
+        //     BMapLib.AreaRestriction.setBounds(map_search, b);
+        // } catch (e) {
+        //     alert(e);
+        // }
 
 
 
@@ -1184,6 +1260,6 @@ let vm = new Vue({
             }
         }
 
-
+        console.log(_this.zbChange("E121°50′55.98″", "N29°54′53.56″"));;
     },
 });

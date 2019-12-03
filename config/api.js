@@ -5,52 +5,22 @@
 
 
 //测试环境
-var host = "http://115.238.154.91";
-var baseURL = host + ":8092/";
+var host = "http://112.14.32.62";
+var baseURL = host + ":9012/";
 
 //接口管理
 var Api = {
-        Log: true,//全局console的开启和关闭
-        uploadImg: baseURL + "file/local-upload",//文件上传接口
-        login: {//登录
-            in: baseURL + "login",//用户登录
-        }
-        , airPosition: {
-            list: baseURL + "air-position/list",//站点列表查询
-            add: baseURL + "air-position/add",//站点添加
-            update: baseURL + "air-position/update"//站点信息修改
-        },
-        airDirty: {//污染源
-            list: baseURL + "air-dirty/list",
-            add: baseURL + "air-dirty/add",
-            update: baseURL + "air-dirty/update"
-        },
-        data: {//实时数据
-            info: baseURL + "data/query",//获取实时数据
-        },
-        indexEarlyWarning: {//指标预警
-            list: baseURL + "report/report/early-warning",//指标预警列表
-        },
-        blueSky: {//蓝天数完成度
-            data: baseURL + "report/blueday",//数据
-        },
-        siteRanking: {//站点排名
-            data:baseURL+"report/position/ranking",//站点排名的数据
-        },
-        hour24:{//24小时数据轮流展示
-            data:baseURL+"report/position/24hour",//24小时数据
-        }
+    Log: true, //全局console的开启和关闭
+    typeList:baseURL +"jfV5blyjsb/api/data_list"
 
-
-    }
-;
+};
 
 
 window.Api = Api;
 
 //全局console管理
-console.log = (function (oriLogFunc) {
-    return function () {
+console.log = (function(oriLogFunc) {
+    return function() {
         //判断配置文件是否开启日志调试
         if (Api.Log) {
             try {

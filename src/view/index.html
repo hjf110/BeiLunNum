@@ -4,6 +4,8 @@
 <head>
     <meta charset="utf-8" />
     <title>北仑数字应急</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+
     <link rel="stylesheet" href="https://www.jq22.com/jquery/animate-3.1.0.min.css">
     <link rel="stylesheet" href="../../node_modules/element-ui/lib/theme-chalk/index.css">
     <link rel="stylesheet" href="../../static/css/aa.css">
@@ -182,24 +184,23 @@
 
             <transition name="rightIn" enter-active-class="animated bounceInDown " leave-active-class="animated bounceOutUp">
                 <div class="left-bottom" v-show="showOption.isRightShow">
-                    <div class="menu_blue_right" @mouseenter="mouseIn2($event,108)" @mouseleave="mouseOut2($event,108)" @click="getData($event,'o3',108)" title="PM10">
-                        危化安全企业
+                    <div class="menu_blue_right" @mouseenter="mouseIn2($event,108)" @mouseleave="mouseOut2($event,108)" @click="toClickType('Whqyxx',$event,108)" title="PM10">
+                        危
                     </div>
-                    <div class="menu_yellow_right" @click="getData($event,'pm25',121)" @mouseenter="mouseIn2($event,121)" @mouseleave="mouseOut2($event,121)" title="PM2.5">
-                        安全生产企业
+                    <div class="menu_yellow_right" @click="toClickType('Bzazcs',$event,121)" @mouseenter="mouseIn2($event,121)" @mouseleave="mouseOut2($event,121)" title="PM2.5">
+                        避
                     </div>
-
-                    <div class="menu_yellow_right" @mouseenter="mouseIn2($event,129)" @click="getData($event,'windSpeed',129)" @mouseleave="mouseOut2($event,129)">
-                        防汛抗旱救灾
+                    <div class="menu_yellow_right" @mouseenter="mouseIn2($event,130)" @click="toClickType('Bwdxxp',$event,130)" @mouseleave="mouseOut2($event,130)">
+                        斜
                     </div>
-                    <div class="menu_yellow_right" @mouseenter="mouseIn2($event,130)" @click="getData($event,'windDirection',130)" @mouseleave="mouseOut2($event,130)">
-                        避灾安置场所
+                    <div class="menu_yellow_right" @mouseenter="mouseIn2($event,128)" @click="toClickType('Slfhsj',$event,128)" @mouseleave="mouseOut2($event,128)">
+                        林
                     </div>
-                    <div class="menu_yellow_right" @mouseenter="mouseIn2($event,126)" @click="getData($event,'temp',126)" @mouseleave="mouseOut2($event,126)">
-                        不稳定斜坡
+                    <div class="menu_yellow_right" @mouseenter="mouseIn2($event,126)" @click="toClickType('Jydwxx',$event,126)" @mouseleave="mouseOut2($event,126)">
+                        队
                     </div>
-                    <div class="menu_yellow_right" @mouseenter="mouseIn2($event,128)" @click="getData($event,'humidity',128)" @mouseleave="mouseOut2($event,128)">
-                        地质灾害隐患
+                    <div class="menu_yellow_right" @mouseenter="mouseIn2($event,129)" @click="toClickType('Dzzhxx',$event,129)" @mouseleave="mouseOut2($event,129)">
+                        地
                     </div>
                     <div class="left_right" @click="showAndHideRight(showOption.isRightShow2)" title="点击缩进">
                     </div>
@@ -436,5 +437,7 @@
 <script src="../../node_modules/echarts/dist/echarts.js"></script>
 <script src="../../config/api.js"></script>
 <script src="../../static/js/tool/tool.js"></script>
+<script src="../../static/js/tool/coordtransform.js"></script>
 <script src="./index.js"></script>
+
 </html>
