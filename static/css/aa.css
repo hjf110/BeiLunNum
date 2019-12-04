@@ -42,7 +42,24 @@ body {
     color: white;
     z-index: 9;
 }
-
+.top2{
+    position: absolute;
+    padding: 10px;
+    width: 40px;
+    min-height: 200px;
+    /* background: url(../../static/js/index/img/head.png) no-repeat; */
+    bottom: 20px;
+    right: 0;
+    margin-left: -261px;
+    text-align: center;
+    font-size: 22px;
+    line-height: 41px;
+    font-family: 'Microsoft YaHei', 'Microsoft YaHei UI';
+    color: white;
+    z-index: 9;
+    background: #161C40;
+    box-shadow: -1px 0px 5px 5px #161c40;
+}
 .right {
     position: absolute;
     padding: 10px;
@@ -58,7 +75,7 @@ body {
 
 .menu_yellow {
     background: url(../../static/js/index/img/yellow_m_repeat.png) repeat-x;
-    width: 160px;
+    width: 30px;
     height: 30px;
     text-align: center;
     color: white;
@@ -70,7 +87,7 @@ body {
 
 .menu_yellow_right {
     background: url(../../static/js/index/img/yellow_m_repeat.png) repeat-x;
-    width: 160px;
+    width: 30px;
     height: 30px;
     text-align: center;
     color: white;
@@ -82,7 +99,7 @@ body {
 
 .menu_1_yellow {
     background: url(../../static/js/index/img/yellow_m_repeat.png) repeat-x;
-    width: 160px;
+    width: 30px;
     height: 30px;
     text-align: center;
     color: white;
@@ -94,7 +111,7 @@ body {
 
 .menu_blue {
     background: url(../../static/js/index/img/blue_m_repeat.png) repeat-x;
-    width: 160px;
+    width: 30px;
     height: 30px;
     text-align: center;
     color: white;
@@ -106,7 +123,7 @@ body {
 
 .menu_blue_right {
     background: url(../../static/js/index/img/blue_m_repeat.png) repeat-x;
-    width: 160px;
+    width: 30px;
     height: 30px;
     text-align: center;
     color: white;
@@ -192,7 +209,7 @@ body {
     padding: 10px;
     bottom: 20px;
     left: 2%;
-    width: 160px;
+    width: 40px;
     min-height: 200px;
     background-color: #161c40;
     opacity: 0.8;

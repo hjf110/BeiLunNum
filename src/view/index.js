@@ -1,10 +1,14 @@
 const table = layui.table;
+const layer = layui.layer;
 let vm = new Vue({
     el: "#app",
     data() {
         return {
-            dataList: [],//点位的所有信息
-            dataForm: {},//单个数据表单
+            infoList: [],
+            layerIndex: "",
+            ispc: true,
+            clickType: "Whqyxx", //点击按钮的类型 (默认为危化企业)
+            infoData: [],
             realTime: {
                 is: false, //是否实时显示
                 time: 5, //实时刷新时间(单位为秒)
@@ -56,18 +60,18 @@ let vm = new Vue({
             //图表参数----------------------
             echartsSetting: {
                 zdfxOption: [{
-                    xAxis: {
-                        type: 'category',
-                        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                        xAxis: {
+                            type: 'category',
+                            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: [{
+                            data: [820, 932, 901, 934, 1290, 1330, 1320],
+                            type: 'line'
+                        }]
                     },
-                    yAxis: {
-                        type: 'value'
-                    },
-                    series: [{
-                        data: [820, 932, 901, 934, 1290, 1330, 1320],
-                        type: 'line'
-                    }]
-                },
                     {
                         xAxis: {
                             type: 'category',
@@ -211,8 +215,8 @@ let vm = new Vue({
             //站点排名------------------------------------------
             siteRanking: {
                 selectOption: [
-                    {name: "24小時", val: 1},
-                    {name: "24小時", val: 2},
+                    { name: "24小時", val: 1 },
+                    { name: "24小時", val: 2 },
                 ],
                 show: false, //站点排名的显示与隐藏
                 type: "1", //站点排名的查询条件
@@ -229,11 +233,11 @@ let vm = new Vue({
                 percentage: 0,
                 customColor: '#409eff',
                 customColors: [
-                    {color: '#f56c6c', percentage: 20},
-                    {color: '#e6a23c', percentage: 40},
-                    {color: '#5cb87a', percentage: 60},
-                    {color: '#1989fa', percentage: 80},
-                    {color: '#6f7ad3', percentage: 100}
+                    { color: '#f56c6c', percentage: 20 },
+                    { color: '#e6a23c', percentage: 40 },
+                    { color: '#5cb87a', percentage: 60 },
+                    { color: '#1989fa', percentage: 80 },
+                    { color: '#6f7ad3', percentage: 100 }
                 ]
             }
         }
@@ -401,7 +405,7 @@ let vm = new Vue({
         getBoundary(map_search) {
             const _this = this;
             var bdary = new BMap.Boundary();
-            bdary.get("宁波市北仑区", function (rs) { //获取行政区域
+            bdary.get("宁波市北仑区", function(rs) { //获取行政区域
                 map_search.clearOverlays(); //清除地图覆盖物
                 var count = rs.boundaries.length; //行政区域的点有多少个
                 if (count === 0) {
@@ -446,7 +450,7 @@ let vm = new Vue({
                 _this.info2 = [];
 
 
-                ajaxSubmit({limit: 500, page: 1}, Api.airDirty.list, "post", res => {
+                ajaxSubmit({ limit: 500, page: 1 }, Api.airDirty.list, "post", res => {
                     console.log("获得的值---", res);
                     // 循环标记站点
                     $.each(res.data, (idx, obj) => {
@@ -455,10 +459,10 @@ let vm = new Vue({
                             anchor: new BMap.Size(30, 45),
                             imageSize: new BMap.Size(65, 45)
                         }); //引用点图标文件
-                        _this.marker2[idx] = new BMap.Marker(_this.point2[idx], {icon: _this.myIcon2[idx]}); // 创建标注，为要查询的地方对应的经纬度
+                        _this.marker2[idx] = new BMap.Marker(_this.point2[idx], { icon: _this.myIcon2[idx] }); // 创建标注，为要查询的地方对应的经纬度
                         //_this.label[idx] = new BMap.Label("23", {offset: new BMap.Size(10, 0)}); //创建点文字组件,文字内容和位置
                         _this.infoWindow2[idx] = new BMap.InfoWindow('<p style="text-align:center;font-weight:bolder;color:red;">无污染源名称:' + obj.name + '</p>');
-                        _this.info2.push({lat: obj.lat, lng: obj.lon});
+                        _this.info2.push({ lat: obj.lat, lng: obj.lon });
 
                         map_search.addOverlay(_this.marker2[idx]); //加入坐标点
                         _this.marker2[idx].setAnimation(BMAP_ANIMATION_BOUNCE);
@@ -483,7 +487,7 @@ let vm = new Vue({
                         // });
                         //_this.marker[idx].setLabel(_this.label[idx]); //将文字组添加到点坐标中
 
-                        _this.marker2[idx].addEventListener("click", function () {
+                        _this.marker2[idx].addEventListener("click", function() {
                             map_search.enableScrollWheelZoom();
                             _this.marker2[idx].openInfoWindow(_this.infoWindow2[idx]);
                         });
@@ -528,6 +532,76 @@ let vm = new Vue({
             this.addLabel(false);
             this.addLabel(true);
         },
+        closeAndOpen(type) {
+            let _this = this;
+            console.log(1212121212121);
+            if (type) { //打開
+                _this.layerIndex = layer.open({
+                    type: 1,
+                    area: ['15%', '100%'],
+                    offset: 'r',
+                    title: false,
+                    anim: 1,
+                    shade: 0,
+                    closeBtn: 0,
+                    content: $('#nameInfo'), //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                    end: function(index, layero) {
+
+                    }
+                });
+            } else { //关闭
+                layer.close(_this.layerIndex);
+            }
+        },
+        // 转换坐标
+        zbChange(lngStr, latStr) {
+            let lng = lngStr.replace("E", "");
+            let lat = latStr.replace("N", "");
+            lng = Number(lng.substring(-1, lng.indexOf("°"))) + Number(lng.substring(lng.indexOf("°") + 1, lng.indexOf("′"))) / 60 + Number(lng.substring(lng.indexOf("′") + 1, lng.indexOf("″"))) / 3600;
+            lat = Number(lat.substring(-1, lat.indexOf("°"))) + Number(lat.substring(lat.indexOf("°") + 1, lat.indexOf("′"))) / 60 + Number(lat.substring(lat.indexOf("′") + 1, lat.indexOf("″"))) / 3600;
+            // console.log("1-----------------------------------", lng, "-----", lat);
+            return [lng, lat]
+        },
+        getIcon() {
+            let cc = this.clickType;
+            let a;
+            if (cc == "Whqyxx") {
+                a = "../../static/img/img_1.png";
+            } else if (cc == "Bzazcs") {
+                a = "../../static/img/img_4.png";
+            } else if (cc == "Dzzhxx") {
+                a = "../../static/img/img_8.png";
+            } else if (cc == "Bwdxxp") {
+                a = "../../static/img/img_7.png";
+            } else if (cc == "Jydwxx") {
+                a = "../../static/img/img_6.png";
+            } else if (cc == "Slfhsj") {
+                a = "../../static/img/img_5.png";
+            }
+            return a;
+        },
+        toClickType(type, e, idx) {
+            $(".menu_blue_right").removeClass().addClass("menu_yellow_right");
+            this.setting.clickType = idx;
+            e.target.className = "menu_blue_right";
+            this.clickType = type;
+            //先刷新站点
+            this.pushClearPoint();
+        },
+        thisMarker(idx) {
+            let _this = this;
+            console.log(idx);
+
+            $.each(_this.marker, (idx, obj) => {
+                obj.setAnimation(null);
+            });
+
+            _this.marker[idx].setAnimation(BMAP_ANIMATION_BOUNCE);
+            setTimeout(() => {
+                _this.marker[idx].setAnimation(null);
+            }, 20000);
+
+        },
         //显示与去掉站点
         addLabel(isShow) {
             const _this = this;
@@ -540,6 +614,7 @@ let vm = new Vue({
             // var label = _this.label; //标记文字显示数组
 
             if (isShow) {
+
                 _this.setting.dianWeiShow = false;
                 _this.marker = {};
                 _this.infoWindow = {};
@@ -547,18 +622,71 @@ let vm = new Vue({
                 _this.myIcon = {};
                 _this.label = {};
                 _this.info = [];
-                ajaxSubmit({limit: 500, page: 1}, "data.json", "get", res => {
+                ajaxSubmit({ pageSize: 100, pageNo: 1 }, Api.typeList + _this.clickType, "get", res => {
                     console.log("获得的值---", res);
+
+                    _this.infoData = [];
+                    _this.infoData = res.rows;
+                    _this.infoList = [];
                     // 循环标记站点
-                    _this.dataList = res.rows;
                     $.each(res.rows, (idx, obj) => {
-                        let aa = bd_encrypt(obj.WZJD,obj.WZWD);
-                        _this.point[idx] = new window.BMap.Point(obj.WZJD, obj.WZWD); //存入坐标
-                        _this.myIcon[idx] = new BMap.Icon("../../static/img/weixiang.png", new BMap.Size(100, 80), {
-                            anchor: new BMap.Size(43, 53),
-                            imageSize: new BMap.Size(95, 55)
+                        let aa = "";
+                        let bb = "";
+                        let cccc = _this.clickType;
+                        if (cccc == "Whqyxx") {
+                            aa = coordtransform.wgs84togcj02(obj.WZJD, obj.WZWD);
+                            bb = coordtransform.gcj02tobd09(aa[0], aa[1]);
+                        } else if (cccc == "Bzazcs") {
+                            let dd = _this.zbChange(obj.JD, obj.WD);
+                            aa = coordtransform.wgs84togcj02(dd[0], dd[1]);
+                            bb = coordtransform.gcj02tobd09(aa[0], aa[1]);
+                        } else if (cccc == "Bwdxxp" || cccc == "Dzzhxx") {
+                            let dd = _this.zbChange(obj.DJ, obj.BW);
+                            aa = coordtransform.wgs84togcj02(dd[0], dd[1]);
+                            bb = coordtransform.gcj02tobd09(aa[0], aa[1]);
+                        } else if(cccc == "Slfhsj") {
+                            aa = coordtransform.wgs84togcj02(obj.JD, obj.WD);
+                            bb = coordtransform.gcj02tobd09(aa[0], aa[1]);
+                        } else if(cccc == "Jydwxx") {
+                            aa = coordtransform.wgs84togcj02(obj.WD, obj.JD);
+                            bb = coordtransform.gcj02tobd09(aa[0], aa[1]);
+                        }
+
+
+
+                        switch (cccc) {
+                            case "Whqyxx":
+                                _this.infoList.push(obj.QYMC);
+                                break;
+                            case "Bzazcs":
+                                _this.infoList.push(obj.BZAZCS);
+                                break;
+                            case "Bwdxxp":
+                                _this.infoList.push(obj.BH);
+                                break;
+                            case "Dzzhxx":
+                                _this.infoList.push(obj.QJBH);
+                                break;
+                            case "Slfhsj":
+                                _this.infoList.push(obj.MC);
+                                break;
+                            case "Jydwxx":
+                                _this.infoList.push(obj.DWMC);
+                                break;
+                            default:
+                                break;
+                        }
+
+                        console.log(aa);
+                        console.log(bb);
+                        // console.log(data);
+                        _this.point[idx] = new window.BMap.Point(bb[0], bb[1]); //存入坐标
+                        let iconGet = _this.getIcon()
+                        _this.myIcon[idx] = new BMap.Icon(iconGet, new BMap.Size(30, 40), {
+                            anchor: new BMap.Size(13, 42),
+                            imageSize: new BMap.Size(30, 40)
                         }); //引用点图标文件
-                        _this.marker[idx] = new BMap.Marker(_this.point[idx], {icon: _this.myIcon[idx]}); // 创建标注，为要查询的地方对应的经纬度
+                        _this.marker[idx] = new BMap.Marker(_this.point[idx], { icon: _this.myIcon[idx] }); // 创建标注，为要查询的地方对应的经纬度
                         // _this.label[idx] = new BMap.Label(obj.name, { offset: new BMap.Size(-12, 0) }); //创建点文字组件,文字内容和位置
                         let opts = {
                             title: obj.name, // 信息窗口标题
@@ -567,7 +695,7 @@ let vm = new Vue({
                         }
 
                         _this.infoWindow[idx] = new BMap.InfoWindow(' ', opts);
-                        _this.info.push({unionid: obj.unionid, lat: obj.lat, lng: obj.lon});
+                        _this.info.push({ unionid: obj.unionid, lat: obj.lat, lng: obj.lon });
 
                         map_search.addOverlay(_this.marker[idx]); //加入坐标点
 
@@ -597,18 +725,22 @@ let vm = new Vue({
                         // });
                         //_this.marker[idx].setLabel(_this.label[idx]); //将文字组添加到点坐标中
 
-                        _this.marker[idx].addEventListener("click", function () {
-                            _this.dataForm = {};
-                            console.log(idx);
-                            // 点击获得的索引值
-                            _this.dataForm = _this.dataList[idx];
-                            console.log(_this.dataForm);
-
-                            _this.blueSky.show = true;
+                        _this.marker[idx].addEventListener("click", function() {
                             // map_search.enableScrollWheelZoom();
                             // _this.marker[idx].openInfoWindow(_this.infoWindow[idx]);
-                        });
+                            console.log(_this.infoData[idx].PC_URL);
+                            // if (_this.clickType == "Whqyxx") {
+                            layer.open({
+                                type: 2,
+                                title: '信息',
+                                shadeClose: true,
+                                shade: 0.8,
+                                area: ['90%', '90%'],
+                                content: _this.infoData[idx].PC_URL
+                            });
+                            // }
 
+                        });
 
                     });
 
@@ -645,7 +777,7 @@ let vm = new Vue({
         getNowData() {
             let _this = this;
             let type = _this.nowdataType;
-            ajaxSubmit({type: type}, Api.data.info, "get", res => {
+            ajaxSubmit({ type: type }, Api.data.info, "get", res => {
                 console.log("获取的实时数据-=-=-=-", res.data);
                 $.each(res.data, (idx, obj) => {
                     let _idx = _this.getPointIndexByUnionid(obj.mn);
@@ -699,7 +831,7 @@ let vm = new Vue({
             console.log(this.label);
 
             this.nowdataType = type;
-            // this.getNowData();
+            this.getNowData();
 
 
         },
@@ -716,8 +848,8 @@ let vm = new Vue({
                 this.$prompt('请输入污染源名称', '添加污染源', {
                     confirmButtonText: '确定添加',
                     cancelButtonText: '取消',
-                }).then(({value}) => {
-                    ajaxSubmit({lat: e.point.lat, lon: e.point.lng, name: value}, Api.airDirty.add, "post", res => {
+                }).then(({ value }) => {
+                    ajaxSubmit({ lat: e.point.lat, lon: e.point.lng, name: value }, Api.airDirty.add, "post", res => {
                         _this.$message.closeAll();
                         _this.$message.success("添加成功");
                         _this.pop.dirty = true;
@@ -801,7 +933,7 @@ let vm = new Vue({
                 anim: 1,
                 shade: 0,
                 content: $('#dirty'), //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-                end: function (index, layero) {
+                end: function(index, layero) {
                     _this.hideDirtyGL();
                 }
             });
@@ -814,22 +946,22 @@ let vm = new Vue({
                     elem: '#dirtyTable',
                     height: 800,
                     url: Api.airDirty.list //数据接口
-                    ,
+                        ,
                     method: "post",
                     page: true //开启分页
-                    ,
+                        ,
                     cols: [
                         [ //表头
-                            {title: '序号', type: "numbers"}, {
-                            field: 'id',
-                            title: 'ID',
-                            sort: true,
-                            hide: true
-                        }, {field: 'lat', title: '纬度'}, {field: 'lon', title: '经度'}, {
-                            field: 'name',
-                            title: '污染源名称',
-                            edit: 'text'
-                        }, {fixed: 'right', width: 150, align: 'center', toolbar: '#barDemo'}
+                            { title: '序号', type: "numbers" }, {
+                                field: 'id',
+                                title: 'ID',
+                                sort: true,
+                                hide: true
+                            }, { field: 'lat', title: '纬度' }, { field: 'lon', title: '经度' }, {
+                                field: 'name',
+                                title: '污染源名称',
+                                edit: 'text'
+                            }, { fixed: 'right', width: 150, align: 'center', toolbar: '#barDemo' }
                         ]
                     ],
                     toolbar: "#toolbar"
@@ -868,7 +1000,7 @@ let vm = new Vue({
                 anim: 1,
                 shade: 0,
                 content: $('#clearDw'), //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-                end: function (index, layero) {
+                end: function(index, layero) {
                     _this.hideDwGL();
                 }
             });
@@ -881,18 +1013,18 @@ let vm = new Vue({
                     elem: '#clearDwTable',
                     height: 800,
                     url: Api.airPosition.list //数据接口
-                    ,
+                        ,
                     method: "post",
                     page: true //开启分页
-                    ,
+                        ,
                     cols: [
                         [ //表头
-                            {title: '序号', type: "numbers"}, {
-                            field: 'id',
-                            title: 'ID',
-                            sort: true,
-                            hide: true
-                        }, {field: 'unionid', title: '设备id'}, {field: 'lat', title: '纬度'}, {field: 'lon', title: '经度'}
+                            { title: '序号', type: "numbers" }, {
+                                field: 'id',
+                                title: 'ID',
+                                sort: true,
+                                hide: true
+                            }, { field: 'unionid', title: '设备id' }, { field: 'lat', title: '纬度' }, { field: 'lon', title: '经度' }
                             //, {fixed: 'right', width: 150, align: 'center', toolbar: '#barDemo'}
                         ]
                     ],
@@ -956,13 +1088,12 @@ let vm = new Vue({
             ajaxSubmit({}, Api.blueSky.data, "get", res => {
                 _this.blueSky.data = res.data; //赋值蓝天数数据
                 _this.panduan(res.data.complete, res.data.total); //赋值蓝天数血瓶显示
-            }, err => {
-            });
+            }, err => {});
         },
         //获取站点排名的数据-------------------
         getSiteRankingData() {
             let _this = this;
-            ajaxSubmit({timetype: _this.siteRanking.type}, Api.siteRanking.data, "get", res => {
+            ajaxSubmit({ timetype: _this.siteRanking.type }, Api.siteRanking.data, "get", res => {
                 console.log(res);
                 _this.siteRanking.data = res.data;
             }, err => {
@@ -1012,8 +1143,7 @@ let vm = new Vue({
                 }, 1000);
 
 
-            }, err => {
-            })
+            }, err => {})
         }
 
 
@@ -1022,16 +1152,17 @@ let vm = new Vue({
         "siteRanking.type"(newVal, oldVal) {
             this.getSiteRankingData();
         },
-        "blueSky.show"(newVal,oldVal) {
+        "blueSky.show"(newVal, oldVal) {
             this.showAndHideUi(!newVal);
         }
     },
     mounted() {
         const _this = this;
+        _this.closeAndOpen(true);
         var map_search = new BMap.Map("container_search", {
-            mapType: BMAP_HYBRID_MAP,
-            minZoom: 12,
-            maxZoom: 30,
+            mapType: BMAP_NORMAL_MAP,
+            // minZoom: 12,
+            // maxZoom: 30,
             enableMapClick: false
         });
 
@@ -1046,20 +1177,27 @@ let vm = new Vue({
         map_search.enableContinuousZoom(); //启用地图惯性拖拽，默认禁用
         //设置地图中心
         // map_search.centerAndZoom(new BMap.Point(121.56168, 29.893093), 5);
-        var b = new BMap.Bounds(new BMap.Point(121.630954, 29.695737), new BMap.Point(122.200228, 30.017797));
-        try {
-            BMapLib.AreaRestriction.setBounds(map_search, b);
-        } catch (e) {
-            alert(e);
-        }
+        // var b = new BMap.Bounds(new BMap.Point(121.630954, 29.695737), new BMap.Point(122.200228, 30.017797));
+        // try {
+        //     BMapLib.AreaRestriction.setBounds(map_search, b);
+        // } catch (e) {
+        //     alert(e);
+        // }
 
 
         //监听地图点击事件
         map_search.addEventListener("click", this.getMapClick);
 
-        setTimeout(function () {
+        setTimeout(function() {
             _this.getBoundary(map_search);
         }, 100);
+
+
+        //判断是否为pc端
+        _this.ispc = IsPC();
+
+
+
 
 
         //污染源管理模块------------------------------------------------------------------------
@@ -1067,7 +1205,7 @@ let vm = new Vue({
 
         //_this.changeDate(num);
         //监听事件头工具点击事件
-        table.on('toolbar(dirtyTable)', function (obj) {
+        table.on('toolbar(dirtyTable)', function(obj) {
             var checkStatus = table.checkStatus(obj.config.id);
             switch (obj.event) {
                 case 'add':
@@ -1085,7 +1223,7 @@ let vm = new Vue({
         });
 
         //监听单元格编辑事件
-        table.on('edit(dirtyTable)', function (obj) { //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+        table.on('edit(dirtyTable)', function(obj) { //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
             console.log(obj.value); //得到修改后的值
             console.log(obj.data); //得到修改后的值
             // console.log(obj.data); //得到修改后的值
@@ -1095,7 +1233,7 @@ let vm = new Vue({
                 type: 'warning'
             }).then(() => {
 
-                ajaxSubmit({id: obj.data.id, name: obj.value}, Api.airDirty.update, "post", res => {
+                ajaxSubmit({ id: obj.data.id, name: obj.value }, Api.airDirty.update, "post", res => {
                     _this.$message.success("污染源名称修改成功");
                     table.reload('dirtyTable');
                 }, err => {
@@ -1109,7 +1247,7 @@ let vm = new Vue({
         });
 
         //监听工具条
-        table.on('tool(dirtyTable)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+        table.on('tool(dirtyTable)', function(obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
@@ -1136,7 +1274,7 @@ let vm = new Vue({
 
 
         //监听行单击事件
-        table.on('row(dirtyTable)', function (obj) {
+        table.on('row(dirtyTable)', function(obj) {
             // console.log(obj.tr); //得到当前行元素对象
             // console.log(obj.data) ;//得到当前行数据
             //obj.del(); //删除当前行
@@ -1158,7 +1296,7 @@ let vm = new Vue({
         //点位管理模块------------------------------------------------------------------------
 
         //监听行单击事件
-        table.on('row(clearDwTable)', function (obj) {
+        table.on('row(clearDwTable)', function(obj) {
             // console.log(obj.tr); //得到当前行元素对象
             // console.log(obj.data) ;//得到当前行数据
             //obj.del(); //删除当前行
@@ -1183,7 +1321,7 @@ let vm = new Vue({
 
 
         //监听按键
-        document.onkeydown = function (e) {
+        document.onkeydown = function(e) {
             let _key = window.event.keyCode;
             // console.log(_key);
             if (_key === 27) { //按下了ESC健
@@ -1203,6 +1341,6 @@ let vm = new Vue({
             }
         }
 
-
+        //console.log(_this.zbChange("E121°50′55.98″", "N29°54′53.56″"));;
     },
 });
