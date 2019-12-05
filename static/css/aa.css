@@ -42,7 +42,24 @@ body {
     color: white;
     z-index: 9;
 }
-
+.top2{
+    position: absolute;
+    padding: 10px;
+    width: 40px;
+    min-height: 200px;
+    /* background: url(../../static/js/index/img/head.png) no-repeat; */
+    bottom: 20px;
+    right: 0;
+    margin-left: -261px;
+    text-align: center;
+    font-size: 22px;
+    line-height: 41px;
+    font-family: 'Microsoft YaHei', 'Microsoft YaHei UI';
+    color: white;
+    z-index: 9;
+    background: #161C40;
+    box-shadow: -1px 0px 5px 5px #161c40;
+}
 .right {
     position: absolute;
     padding: 10px;
