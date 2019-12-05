@@ -640,9 +640,15 @@ let vm = new Vue({
                             let dd = _this.zbChange(obj.JD, obj.WD);
                             aa = coordtransform.wgs84togcj02(dd[0], dd[1]);
                             bb = coordtransform.gcj02tobd09(aa[0], aa[1]);
-                        } else {
+                        } else if (cccc == "Bwdxxp" || cccc == "Dzzhxx") {
                             let dd = _this.zbChange(obj.DJ, obj.BW);
                             aa = coordtransform.wgs84togcj02(dd[0], dd[1]);
+                            bb = coordtransform.gcj02tobd09(aa[0], aa[1]);
+                        } else if(cccc == "Slfhsj") {
+                            aa = coordtransform.wgs84togcj02(obj.JD, obj.WD);
+                            bb = coordtransform.gcj02tobd09(aa[0], aa[1]);
+                        } else if(cccc == "Jydwxx") {
+                            aa = coordtransform.wgs84togcj02(obj.WD, obj.JD);
                             bb = coordtransform.gcj02tobd09(aa[0], aa[1]);
                         }
 
@@ -658,9 +664,15 @@ let vm = new Vue({
                             case "Bwdxxp":
                                 _this.infoList.push(obj.BH);
                                 break;
-                                case "Dzzhxx":
-                                    _this.infoList.push(obj.QJBH);
-                                    break;
+                            case "Dzzhxx":
+                                _this.infoList.push(obj.QJBH);
+                                break;
+                            case "Slfhsj":
+                                _this.infoList.push(obj.MC);
+                                break;
+                            case "Jydwxx":
+                                _this.infoList.push(obj.DWMC);
+                                break;
                             default:
                                 break;
                         }
@@ -717,16 +729,16 @@ let vm = new Vue({
                             // map_search.enableScrollWheelZoom();
                             // _this.marker[idx].openInfoWindow(_this.infoWindow[idx]);
                             console.log(_this.infoData[idx].PC_URL);
-                            if (_this.clickType == "Whqyxx") {
-                                layer.open({
-                                    type: 2,
-                                    title: '信息',
-                                    shadeClose: true,
-                                    shade: 0.8,
-                                    area: ['90%', '90%'],
-                                    content: _this.infoData[idx].PC_URL
-                                });
-                            }
+                            // if (_this.clickType == "Whqyxx") {
+                            layer.open({
+                                type: 2,
+                                title: '信息',
+                                shadeClose: true,
+                                shade: 0.8,
+                                area: ['90%', '90%'],
+                                content: _this.infoData[idx].PC_URL
+                            });
+                            // }
 
                         });
 
