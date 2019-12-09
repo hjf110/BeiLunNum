@@ -4,6 +4,7 @@ let vm = new Vue({
     el: "#app",
     data() {
         return {
+            keyWord: "", //关键字
             infoList: [],
             layerIndex: "",
             ispc: true,
@@ -555,11 +556,25 @@ let vm = new Vue({
         },
         // 转换坐标
         zbChange(lngStr, latStr) {
-            let lng = lngStr.replace("E", "");
-            let lat = latStr.replace("N", "");
-            lng = Number(lng.substring(-1, lng.indexOf("°"))) + Number(lng.substring(lng.indexOf("°") + 1, lng.indexOf("′"))) / 60 + Number(lng.substring(lng.indexOf("′") + 1, lng.indexOf("″"))) / 3600;
-            lat = Number(lat.substring(-1, lat.indexOf("°"))) + Number(lat.substring(lat.indexOf("°") + 1, lat.indexOf("′"))) / 60 + Number(lat.substring(lat.indexOf("′") + 1, lat.indexOf("″"))) / 3600;
-            // console.log("1-----------------------------------", lng, "-----", lat);
+            let lng;
+            let lat;
+            if (lngStr && latStr) {
+                if (lngStr.indexOf("E") >= 0) {
+                    lng = lngStr.replace("E", "");
+                    lat = latStr.replace("N", "");
+                } else {
+                    lng = lngStr;
+                    lat = latStr;
+                }
+                lng = Number(lng.substring(-1, lng.indexOf("°"))) + Number(lng.substring(lng.indexOf("°") + 1, lng.indexOf("′"))) / 60 + Number(lng.substring(lng.indexOf("′") + 1, lng.indexOf("″"))) / 3600;
+                lat = Number(lat.substring(-1, lat.indexOf("°"))) + Number(lat.substring(lat.indexOf("°") + 1, lat.indexOf("′"))) / 60 + Number(lat.substring(lat.indexOf("′") + 1, lat.indexOf("″"))) / 3600;
+                // console.log("1-----------------------------------", lng, "-----", lat);
+
+            } else {
+                lng = 0;
+                lat = 0
+            }
+           console.log(lngStr,"+++++++",lng,"-----",lat,"-------------")
             return [lng, lat]
         },
         getIcon() {
@@ -591,6 +606,49 @@ let vm = new Vue({
         thisMarker(idx) {
             let _this = this;
             console.log(idx);
+            let point = _this.marker[idx].point;
+            console.log(point);
+            console.log(_this.marker[idx]);
+
+            _this.map.centerAndZoom(new BMap.Point(point.lng, point.lat), 12); //将点选的坐标设为中心
+            setTimeout(() => {
+                _this.map.centerAndZoom(new BMap.Point(point.lng, point.lat), 40); //放大坐标点
+            }, 1000);
+            // setTimeout(() => {
+            //     _this.map.centerAndZoom(new BMap.Point(point.lng, point.lat), 12); //视图复位
+            // }, 20000);
+
+            // var geolocation = new BMap.Geolocation();
+            // geolocation.getCurrentPosition(function(r){
+            //     if(this.getStatus() == BMAP_STATUS_SUCCESS){
+            //         // var mk = new BMap.Marker(r.point);
+            //         // map.addOverlay(mk);
+            //         // map.panTo(r.point);
+            //         alert('您的位置：'+r.point.lng+','+r.point.lat);
+
+
+            //         let driving = new BMap.DrivingRoute(  _this.map, { 
+            //             renderOptions: { 
+            //                 map:   _this.map, 
+            //                 autoViewport: true 
+            //             }
+            //         });
+            //         let start = new BMap.Point(r.point.lng, r.point.lat);
+            //         let end = new BMap.Point(point.lng,point.lat);
+            //         driving.search(start, end);
+
+
+
+
+
+
+
+
+            //     }
+            //     else {
+            //         alert('failed'+this.getStatus());
+            //     }        
+            // },{enableHighAccuracy: true})
 
             $.each(_this.marker, (idx, obj) => {
                 obj.setAnimation(null);
@@ -614,7 +672,7 @@ let vm = new Vue({
             // var label = _this.label; //标记文字显示数组
 
             if (isShow) {
-
+                _this.map.setZoom(11);
                 _this.setting.dianWeiShow = false;
                 _this.marker = {};
                 _this.infoWindow = {};
@@ -622,7 +680,7 @@ let vm = new Vue({
                 _this.myIcon = {};
                 _this.label = {};
                 _this.info = [];
-                ajaxSubmit({ pageSize: 100, pageNo: 1 }, Api.typeList + _this.clickType, "get", res => {
+                ajaxSubmit({ pageSize: 10000, pageNo: 1 }, Api.typeList + _this.clickType, "get", res => {
                     console.log("获得的值---", res);
 
                     _this.infoData = [];
@@ -644,10 +702,10 @@ let vm = new Vue({
                             let dd = _this.zbChange(obj.DJ, obj.BW);
                             aa = coordtransform.wgs84togcj02(dd[0], dd[1]);
                             bb = coordtransform.gcj02tobd09(aa[0], aa[1]);
-                        } else if(cccc == "Slfhsj") {
+                        } else if (cccc == "Slfhsj") {
                             aa = coordtransform.wgs84togcj02(obj.JD, obj.WD);
                             bb = coordtransform.gcj02tobd09(aa[0], aa[1]);
-                        } else if(cccc == "Jydwxx") {
+                        } else if (cccc == "Jydwxx") {
                             aa = coordtransform.wgs84togcj02(obj.WD, obj.JD);
                             bb = coordtransform.gcj02tobd09(aa[0], aa[1]);
                         }
@@ -656,22 +714,22 @@ let vm = new Vue({
 
                         switch (cccc) {
                             case "Whqyxx":
-                                _this.infoList.push(obj.QYMC);
+                                _this.infoList.push({ name: obj.QYMC, index: idx });
                                 break;
                             case "Bzazcs":
-                                _this.infoList.push(obj.BZAZCS);
+                                _this.infoList.push({ name: obj.BZAZCS, index: idx });
                                 break;
                             case "Bwdxxp":
-                                _this.infoList.push(obj.BH);
+                                _this.infoList.push({ name: obj.WZ, index: idx });
                                 break;
                             case "Dzzhxx":
-                                _this.infoList.push(obj.QJBH);
+                                _this.infoList.push({ name: obj.WZ, index: idx });
                                 break;
                             case "Slfhsj":
-                                _this.infoList.push(obj.MC);
+                                _this.infoList.push({ name: obj.MC, index: idx });
                                 break;
                             case "Jydwxx":
-                                _this.infoList.push(obj.DWMC);
+                                _this.infoList.push({ name: obj.DWMC, index: idx });
                                 break;
                             default:
                                 break;
@@ -730,14 +788,27 @@ let vm = new Vue({
                             // _this.marker[idx].openInfoWindow(_this.infoWindow[idx]);
                             console.log(_this.infoData[idx].PC_URL);
                             // if (_this.clickType == "Whqyxx") {
-                            layer.open({
-                                type: 2,
-                                title: '信息',
-                                shadeClose: true,
-                                shade: 0.8,
-                                area: ['90%', '90%'],
-                                content: _this.infoData[idx].PC_URL
-                            });
+                            if (_this.ispc) {
+                                layer.open({
+                                    type: 2,
+                                    title: '信息',
+                                    shadeClose: true,
+                                    shade: 0.8,
+                                    area: ['90%', '90%'],
+                                    content: _this.infoData[idx].PC_URL
+                                });
+                            } else {
+                                layer.open({
+                                    type: 2,
+                                    title: '信息',
+                                    shadeClose: true,
+                                    shade: 0.8,
+                                    area: ['90%', '90%'],
+                                    content: _this.infoData[idx].MO_URL
+                                });
+                            }
+
+
                             // }
 
                         });
@@ -1155,6 +1226,23 @@ let vm = new Vue({
         "blueSky.show"(newVal, oldVal) {
             this.showAndHideUi(!newVal);
         }
+    },
+    // 定义计算属性选项
+    computed: {
+        // 过滤出不同状态数据
+        filterItems() {
+
+            let reg = new RegExp(this.keyWord);
+
+            if (this.keyWord) {
+                return this.infoList.filter(item => item.name.match(reg))
+            } else {
+                return this.infoList
+            }
+
+
+        }
+
     },
     mounted() {
         const _this = this;

@@ -11,20 +11,21 @@
 
 //测试环境
 // var host = "http://112.14.32.62";
+// var baseURL = host + ":9012/";
 
 
 //正式环境
 var host = "http://blyjsb.jfbrother.com";
+var baseURL = host +"/";
 
 
 
 
 
-var baseURL = host + ":9012/";
 
 //接口管理
 var Api = {
-    Log: false, //全局console的开启和关闭
+    Log: true, //全局console的开启和关闭
     typeList:baseURL +"jfV5blyjsb/api/data_list"
 
 };

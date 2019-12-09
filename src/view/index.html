@@ -145,7 +145,7 @@
                 </div>
             </div>
 
-          
+
 
         </transition>
 
@@ -182,11 +182,14 @@
             <table id="clearDwTable" lay-filter="clearDwTable"></table>
         </div>
 
-        <div id="nameInfo"  >
+        <div id="nameInfo">
+            <div style="padding: 15px;">
+                <el-input v-model="keyWord" placeholder="请输入查询内容"></el-input>
+            </div>
             <table class="layui-table">
                 <tbody>
-                    <tr v-for="(obj, idx) in infoList" :key="idx">
-                        <td @click="thisMarker(idx)">{{obj}}</td>
+                    <tr v-for="(obj, idx) in filterItems" :key="idx">
+                        <td @click="thisMarker(obj.index)">{{obj.name}}</td>
                     </tr>
                 </tbody>
             </table>

@@ -27,6 +27,7 @@ body {
 }
 
 .top {
+    display: block;
     position: absolute;
     width: 523px;
     height: 50px;
@@ -43,6 +44,7 @@ body {
     z-index: 9;
 }
 .top2{
+    display: none;
     position: absolute;
     padding: 10px;
     width: 40px;
