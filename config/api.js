@@ -15,7 +15,7 @@
 
 
 //正式环境
-var host = "http://blyjsb.jfbrother.com";
+var host = "http://blyjmobile.jfbrother.com/";
 var baseURL = host +"/";
 
 
@@ -26,7 +26,7 @@ var baseURL = host +"/";
 //接口管理
 var Api = {
     Log: true, //全局console的开启和关闭
-    typeList:baseURL +"jfV5blyjsb/api/data_list"
+    typeList:baseURL +"jfV5blyj/api/data_list"
 
 };
 

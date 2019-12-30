@@ -17,8 +17,8 @@ let vm = new Vue({
             },
             nowdataType: "o3",
             showOption: {
-                isRightShow: true,
-                isRightShow2: false,
+                isRightShow: false,
+                isRightShow2: true,
                 isLeftShow: true,
                 isLeftShow2: false
             },
@@ -627,10 +627,10 @@ let vm = new Vue({
             //         alert('您的位置：'+r.point.lng+','+r.point.lat);
 
 
-            //         let driving = new BMap.DrivingRoute(  _this.map, { 
-            //             renderOptions: { 
-            //                 map:   _this.map, 
-            //                 autoViewport: true 
+            //         let driving = new BMap.DrivingRoute(  _this.map, {
+            //             renderOptions: {
+            //                 map:   _this.map,
+            //                 autoViewport: true
             //             }
             //         });
             //         let start = new BMap.Point(r.point.lng, r.point.lat);
@@ -647,7 +647,7 @@ let vm = new Vue({
             //     }
             //     else {
             //         alert('failed'+this.getStatus());
-            //     }        
+            //     }
             // },{enableHighAccuracy: true})
 
             $.each(_this.marker, (idx, obj) => {
@@ -714,7 +714,7 @@ let vm = new Vue({
 
                         switch (cccc) {
                             case "Whqyxx":
-                                _this.infoList.push({ name: obj.QYMC, index: idx });
+                                _this.infoList.push({ name: obj.QYJC, index: idx });
                                 break;
                             case "Bzazcs":
                                 _this.infoList.push({ name: obj.BZAZCS, index: idx });
@@ -1225,6 +1225,11 @@ let vm = new Vue({
         },
         "blueSky.show"(newVal, oldVal) {
             this.showAndHideUi(!newVal);
+        },
+        "showOption.isRightShow"(newVal, oldVal) {
+            console.log('进入了------------------------',newVal);
+            // this.showAndHideUi(!newVal);
+            this.closeAndOpen(newVal)
         }
     },
     // 定义计算属性选项
@@ -1246,7 +1251,7 @@ let vm = new Vue({
     },
     mounted() {
         const _this = this;
-        _this.closeAndOpen(true);
+        // _this.closeAndOpen(true);
         var map_search = new BMap.Map("container_search", {
             mapType: BMAP_NORMAL_MAP,
             // minZoom: 12,
