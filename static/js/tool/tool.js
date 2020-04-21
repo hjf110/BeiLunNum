@@ -1,56 +1,57 @@
-(function ($) {
-    $.extend({
-        myTime: {
-            /**
-             * 当前时间戳
-             * @return <int>    unix时间戳(秒)
-             */
-            CurTime: function () {
-                return Date.parse(new Date()) / 1000;
-            },
-            /**
-             * 日期 转换为 Unix时间戳
-             * @param <string> 2014-01-01 20:20:20 日期格式
-             * @return <int>    unix时间戳(秒)
-             */
-            DateToUnix: function (string) {
-                var f = string.split(' ', 2);
-                var d = (f[0] ? f[0] : '').split('-', 3);
-                var t = (f[1] ? f[1] : '').split(':', 3);
-                return (new Date(
-                    parseInt(d[0], 10) || null,
-                    (parseInt(d[1], 10) || 1) - 1,
-                    parseInt(d[2], 10) || null,
-                    parseInt(t[0], 10) || null,
-                    parseInt(t[1], 10) || null,
-                    parseInt(t[2], 10) || null
-                )).getTime() / 1000;
-            },
-            /**
-             * 时间戳转换日期
-             * @param <int> unixTime  待时间戳(秒)
-             * @param <bool> isFull  返回完整时间(Y-m-d 或者 Y-m-d H:i:s)
-             * @param <int> timeZone  时区
-             */
-            UnixToDate: function (unixTime, isFull, timeZone) {
-                if (typeof (timeZone) == 'number') {
-                    unixTime = parseInt(unixTime) + parseInt(timeZone) * 60 * 60;
-                }
-                var time = new Date(unixTime * 1000);
-                var ymdhis = "";
-                ymdhis += time.getUTCFullYear() + "-";
-                ymdhis += (time.getUTCMonth() + 1) + "-";
-                ymdhis += time.getUTCDate();
-                if (isFull === true) {
-                    ymdhis += " " + time.getUTCHours() + ":";
-                    ymdhis += time.getUTCMinutes() + ":";
-                    ymdhis += time.getUTCSeconds();
-                }
-                return ymdhis;
-            }
-        }
-    });
-})(jQuery);
+
+// (function ($) {
+//     $.extend({
+//         myTime: {
+//             /**
+//              * 当前时间戳
+//              * @return <int>    unix时间戳(秒)
+//              */
+//             CurTime: function () {
+//                 return Date.parse(new Date()) / 1000;
+//             },
+//             /**
+//              * 日期 转换为 Unix时间戳
+//              * @param <string> 2014-01-01 20:20:20 日期格式
+//              * @return <int>    unix时间戳(秒)
+//              */
+//             DateToUnix: function (string) {
+//                 var f = string.split(' ', 2);
+//                 var d = (f[0] ? f[0] : '').split('-', 3);
+//                 var t = (f[1] ? f[1] : '').split(':', 3);
+//                 return (new Date(
+//                     parseInt(d[0], 10) || null,
+//                     (parseInt(d[1], 10) || 1) - 1,
+//                     parseInt(d[2], 10) || null,
+//                     parseInt(t[0], 10) || null,
+//                     parseInt(t[1], 10) || null,
+//                     parseInt(t[2], 10) || null
+//                 )).getTime() / 1000;
+//             },
+//             /**
+//              * 时间戳转换日期
+//              * @param <int> unixTime  待时间戳(秒)
+//              * @param <bool> isFull  返回完整时间(Y-m-d 或者 Y-m-d H:i:s)
+//              * @param <int> timeZone  时区
+//              */
+//             UnixToDate: function (unixTime, isFull, timeZone) {
+//                 if (typeof (timeZone) == 'number') {
+//                     unixTime = parseInt(unixTime) + parseInt(timeZone) * 60 * 60;
+//                 }
+//                 var time = new Date(unixTime * 1000);
+//                 var ymdhis = "";
+//                 ymdhis += time.getUTCFullYear() + "-";
+//                 ymdhis += (time.getUTCMonth() + 1) + "-";
+//                 ymdhis += time.getUTCDate();
+//                 if (isFull === true) {
+//                     ymdhis += " " + time.getUTCHours() + ":";
+//                     ymdhis += time.getUTCMinutes() + ":";
+//                     ymdhis += time.getUTCSeconds();
+//                 }
+//                 return ymdhis;
+//             }
+//         }
+//     });
+// })(jQuery);
 
 
 /*跳转到某一元素*/
@@ -69,191 +70,191 @@ function isPhoneNo(phone) {
 }
 
 
-/*校验身份证格式*/
-function testId(value) {
-    var vcity = {
-        11: "北京",
-        12: "天津",
-        13: "河北",
-        14: "山西",
-        15: "内蒙古",
-        21: "辽宁",
-        22: "吉林",
-        23: "黑龙江",
-        31: "上海",
-        32: "江苏",
-        33: "浙江",
-        34: "安徽",
-        35: "福建",
-        36: "江西",
-        37: "山东",
-        41: "河南",
-        42: "湖北",
-        43: "湖南",
-        44: "广东",
-        45: "广西",
-        46: "海南",
-        50: "重庆",
-        51: "四川",
-        52: "贵州",
-        53: "云南",
-        54: "西藏",
-        61: "陕西",
-        62: "甘肃",
-        63: "青海",
-        64: "宁夏",
-        65: "新疆",
-        71: "台湾",
-        81: "香港",
-        82: "澳门",
-        91: "国外"
-    };
+// /*校验身份证格式*/
+// function testId(value) {
+//     var vcity = {
+//         11: "北京",
+//         12: "天津",
+//         13: "河北",
+//         14: "山西",
+//         15: "内蒙古",
+//         21: "辽宁",
+//         22: "吉林",
+//         23: "黑龙江",
+//         31: "上海",
+//         32: "江苏",
+//         33: "浙江",
+//         34: "安徽",
+//         35: "福建",
+//         36: "江西",
+//         37: "山东",
+//         41: "河南",
+//         42: "湖北",
+//         43: "湖南",
+//         44: "广东",
+//         45: "广西",
+//         46: "海南",
+//         50: "重庆",
+//         51: "四川",
+//         52: "贵州",
+//         53: "云南",
+//         54: "西藏",
+//         61: "陕西",
+//         62: "甘肃",
+//         63: "青海",
+//         64: "宁夏",
+//         65: "新疆",
+//         71: "台湾",
+//         81: "香港",
+//         82: "澳门",
+//         91: "国外"
+//     };
 
-    // 判断是否为空
-    isEmpty = function (card) {
-        if (/^\s*$/.test(card) === true) {
-            return true;
-        }
-    }
-    //检查号码是否符合规范，包括长度，类型
-    isCardNo = function (card) {
-        if (isEmpty(card)) {
-            return true;
-        }
-        //这个代码表示身份证可以为空
-        //身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X
-        var reg = /(^\d{15}$)|(^\d{17}(\d|X)$)/;
-        if (reg.test(card) === false) {
-            return false;
-        }
-        return true;
-    };
+//     // 判断是否为空
+//     isEmpty = function (card) {
+//         if (/^\s*$/.test(card) === true) {
+//             return true;
+//         }
+//     }
+//     //检查号码是否符合规范，包括长度，类型
+//     isCardNo = function (card) {
+//         if (isEmpty(card)) {
+//             return true;
+//         }
+//         //这个代码表示身份证可以为空
+//         //身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X
+//         var reg = /(^\d{15}$)|(^\d{17}(\d|X)$)/;
+//         if (reg.test(card) === false) {
+//             return false;
+//         }
+//         return true;
+//     };
 
-    //取身份证前两位,校验省份
-    checkProvince = function (card) {
-        if (isEmpty(card)) {
-            return true;
-        }
-        var province = card.substr(0, 2);
-        if (vcity[province] == undefined) {
-            return false;
-        }
-        return true;
-    };
+//     //取身份证前两位,校验省份
+//     checkProvince = function (card) {
+//         if (isEmpty(card)) {
+//             return true;
+//         }
+//         var province = card.substr(0, 2);
+//         if (vcity[province] == undefined) {
+//             return false;
+//         }
+//         return true;
+//     };
 
-    //检查生日是否正确
-    checkBirthday = function (card) {
-        if (isEmpty(card)) {
-            return true;
-        }
-        var len = card.length;
-        //身份证15位时，次序为省（3位）市（3位）年（2位）月（2位）日（2位）校验位（3位），皆为数字
-        if (len == '15') {
-            var re_fifteen = /^(\d{6})(\d{2})(\d{2})(\d{2})(\d{3})$/;
-            var arr_data = card.match(re_fifteen);
-            var year = arr_data[2];
-            var month = arr_data[3];
-            var day = arr_data[4];
-            var birthday = new Date('19' + year + '/' + month + '/' + day);
-            return verifyBirthday('19' + year, month, day, birthday);
-        }
-        //身份证18位时，次序为省（3位）市（3位）年（4位）月（2位）日（2位）校验位（4位），校验位末尾可能为X
-        if (len == '18') {
-            var re_eighteen = /^(\d{6})(\d{4})(\d{2})(\d{2})(\d{3})([0-9]|X)$/;
-            var arr_data = card.match(re_eighteen);
-            var year = arr_data[2];
-            var month = arr_data[3];
-            var day = arr_data[4];
-            var birthday = new Date(year + '/' + month + '/' + day);
-            return verifyBirthday(year, month, day, birthday);
-        }
-        return false;
-    };
+//     //检查生日是否正确
+//     checkBirthday = function (card) {
+//         if (isEmpty(card)) {
+//             return true;
+//         }
+//         var len = card.length;
+//         //身份证15位时，次序为省（3位）市（3位）年（2位）月（2位）日（2位）校验位（3位），皆为数字
+//         if (len == '15') {
+//             var re_fifteen = /^(\d{6})(\d{2})(\d{2})(\d{2})(\d{3})$/;
+//             var arr_data = card.match(re_fifteen);
+//             var year = arr_data[2];
+//             var month = arr_data[3];
+//             var day = arr_data[4];
+//             var birthday = new Date('19' + year + '/' + month + '/' + day);
+//             return verifyBirthday('19' + year, month, day, birthday);
+//         }
+//         //身份证18位时，次序为省（3位）市（3位）年（4位）月（2位）日（2位）校验位（4位），校验位末尾可能为X
+//         if (len == '18') {
+//             var re_eighteen = /^(\d{6})(\d{4})(\d{2})(\d{2})(\d{3})([0-9]|X)$/;
+//             var arr_data = card.match(re_eighteen);
+//             var year = arr_data[2];
+//             var month = arr_data[3];
+//             var day = arr_data[4];
+//             var birthday = new Date(year + '/' + month + '/' + day);
+//             return verifyBirthday(year, month, day, birthday);
+//         }
+//         return false;
+//     };
 
-    //校验日期
-    verifyBirthday = function (year, month, day, birthday) {
-        var now = new Date();
-        var now_year = now.getFullYear();
-        //年月日是否合理
-        if (birthday.getFullYear() == year && (birthday.getMonth() + 1) == month && birthday.getDate() == day) {
-            //判断年份的范围（3岁到100岁之间)
-            var time = now_year - year;
-            if (time >= 3 && time <= 100) {
-                return true;
-            }
-            return false;
-        }
-        return false;
-    };
+//     //校验日期
+//     verifyBirthday = function (year, month, day, birthday) {
+//         var now = new Date();
+//         var now_year = now.getFullYear();
+//         //年月日是否合理
+//         if (birthday.getFullYear() == year && (birthday.getMonth() + 1) == month && birthday.getDate() == day) {
+//             //判断年份的范围（3岁到100岁之间)
+//             var time = now_year - year;
+//             if (time >= 3 && time <= 100) {
+//                 return true;
+//             }
+//             return false;
+//         }
+//         return false;
+//     };
 
-    //校验位的检测
-    checkParity = function (card) {
-        if (isEmpty(card)) {
-            return true;
-        }
-        //15位转18位
-        card = changeFivteenToEighteen(card);
-        var len = card.length;
-        if (len == '18') {
-            var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
-            var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
-            var cardTemp = 0,
-                i, valnum;
-            for (i = 0; i < 17; i++) {
-                cardTemp += card.substr(i, 1) * arrInt[i];
-            }
-            valnum = arrCh[cardTemp % 11];
-            if (valnum == card.substr(17, 1)) {
-                return true;
-            }
-            return false;
-        }
-        return false;
-    };
+//     //校验位的检测
+//     checkParity = function (card) {
+//         if (isEmpty(card)) {
+//             return true;
+//         }
+//         //15位转18位
+//         card = changeFivteenToEighteen(card);
+//         var len = card.length;
+//         if (len == '18') {
+//             var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
+//             var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
+//             var cardTemp = 0,
+//                 i, valnum;
+//             for (i = 0; i < 17; i++) {
+//                 cardTemp += card.substr(i, 1) * arrInt[i];
+//             }
+//             valnum = arrCh[cardTemp % 11];
+//             if (valnum == card.substr(17, 1)) {
+//                 return true;
+//             }
+//             return false;
+//         }
+//         return false;
+//     };
 
-    //15位转18位身份证号
-    changeFivteenToEighteen = function (card) {
-        if (isEmpty(card)) {
-            return true;
-        }
-        if (card.length == '15') {
-            var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
-            var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
-            var cardTemp = 0,
-                i;
-            card = card.substr(0, 6) + '19' + card.substr(6, card.length - 6);
-            for (i = 0; i < 17; i++) {
-                cardTemp += card.substr(i, 1) * arrInt[i];
-            }
-            card += arrCh[cardTemp % 11];
-            return card;
-        }
-        return card;
-    };
+//     //15位转18位身份证号
+//     changeFivteenToEighteen = function (card) {
+//         if (isEmpty(card)) {
+//             return true;
+//         }
+//         if (card.length == '15') {
+//             var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
+//             var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
+//             var cardTemp = 0,
+//                 i;
+//             card = card.substr(0, 6) + '19' + card.substr(6, card.length - 6);
+//             for (i = 0; i < 17; i++) {
+//                 cardTemp += card.substr(i, 1) * arrInt[i];
+//             }
+//             card += arrCh[cardTemp % 11];
+//             return card;
+//         }
+//         return card;
+//     };
 
-    //checkCard = function () {
-    var card = value;
-    //校验长度，类型
-    if (isCardNo(card) === false) {
-        //alert('您输入的身份证号码不正确，请重新输入');
-        //document.getElementById('card_no').focus;
-        return false;
-    }
-    //检查省份
-    if (checkProvince(card) === false) {
-        return false;
-    }
-    //校验生日
-    if (checkBirthday(card) === false) {
-        return false;
-    }
-    //检验位的检测
-    if (checkParity(card) === false) {
-        return false;
-    }
+//     //checkCard = function () {
+//     var card = value;
+//     //校验长度，类型
+//     if (isCardNo(card) === false) {
+//         //alert('您输入的身份证号码不正确，请重新输入');
+//         //document.getElementById('card_no').focus;
+//         return false;
+//     }
+//     //检查省份
+//     if (checkProvince(card) === false) {
+//         return false;
+//     }
+//     //校验生日
+//     if (checkBirthday(card) === false) {
+//         return false;
+//     }
+//     //检验位的检测
+//     if (checkParity(card) === false) {
+//         return false;
+//     }
 
-    return true;
-}
+//     return true;
+// }
 
 
 //-----------------压缩图片----------------------------
@@ -446,37 +447,37 @@ var ajaxSubmit = function (submitData, url, type, method, errMethod) {
 };
 
 
-//单击行勾选checkbox事件
-$(document).on("click", ".layui-table-body table.layui-table tbody tr", function () {
-    var index = $(this).attr('data-index');
-    var tableBox = $(this).parents('.layui-table-box');
-    //存在固定列
-    if (tableBox.find(".layui-table-fixed.layui-table-fixed-l").length > 0) {
-        tableDiv = tableBox.find(".layui-table-fixed.layui-table-fixed-l");
-    } else {
-        tableDiv = tableBox.find(".layui-table-body.layui-table-main");
-    }
-    var checkCell = tableDiv.find("tr[data-index=" + index + "]").find("td div.laytable-cell-checkbox div.layui-form-checkbox I");
-    if (checkCell.length > 0) {
-        checkCell.click();
-    }
-});
+// //单击行勾选checkbox事件
+// $(document).on("click", ".layui-table-body table.layui-table tbody tr", function () {
+//     var index = $(this).attr('data-index');
+//     var tableBox = $(this).parents('.layui-table-box');
+//     //存在固定列
+//     if (tableBox.find(".layui-table-fixed.layui-table-fixed-l").length > 0) {
+//         tableDiv = tableBox.find(".layui-table-fixed.layui-table-fixed-l");
+//     } else {
+//         tableDiv = tableBox.find(".layui-table-body.layui-table-main");
+//     }
+//     var checkCell = tableDiv.find("tr[data-index=" + index + "]").find("td div.laytable-cell-checkbox div.layui-form-checkbox I");
+//     if (checkCell.length > 0) {
+//         checkCell.click();
+//     }
+// });
 
 
-$(document).on("click", "td div.laytable-cell-checkbox div.layui-form-checkbox", function (e) {
-    e.stopPropagation();
-});
+// $(document).on("click", "td div.laytable-cell-checkbox div.layui-form-checkbox", function (e) {
+//     e.stopPropagation();
+// });
 // 454464646464464646464
 
-//去重添加数组
-Array.prototype.push_unique = function () {
-    for (var i = 0; i < arguments.length; i++) {
-        var ele = arguments[i];
-        if (this.indexOf(ele) == -1) {
-            this.push(ele);
-        }
-    }
-};
+// //去重添加数组
+// Array.prototype.push_unique = function () {
+//     for (var i = 0; i < arguments.length; i++) {
+//         var ele = arguments[i];
+//         if (this.indexOf(ele) == -1) {
+//             this.push(ele);
+//         }
+//     }
+// };
 
 //json对象数组去重
 function unique(list) {
@@ -569,11 +570,11 @@ function timestampToTime(timestamp) {
 /*
  * 去掉字符串中的所有空格
  * */
-function Trim(str) {
-    var result;
-    result = result.replace(/\s/g, "");
-    return result;
-}
+// function Trim(str) {
+//     var result;
+//     result = result.replace(/\s/g, "");
+//     return result;
+// }
 
 
 /**
@@ -661,14 +662,14 @@ function delList(arr, obj) {
 }
 
 
-function checkEndTime(now, input) {
-    var start = new Date(now.replace("-", "/").replace("-", "/"));
-    var end = new Date(input.replace("-", "/").replace("-", "/"));
-    if (end < start) {
-        return false;
-    }
-    return true;
-}
+// function checkEndTime(now, input) {
+//     var start = new Date(now.replace("-", "/").replace("-", "/"));
+//     var end = new Date(input.replace("-", "/").replace("-", "/"));
+//     if (end < start) {
+//         return false;
+//     }
+//     return true;
+// }
 
 /*
  * 根据索引值删除数组中的元素
@@ -830,57 +831,57 @@ function Trim(str, is_global) {
 }
 
 /*替换所有字符串*/
-String.prototype.replaceAll = function (targetStr, newStr) {
-    var sourceStr = this.valueOf();
-    while (sourceStr.indexOf(targetStr) !== -1) {
-        sourceStr = sourceStr.replace(targetStr, newStr);
-    }
-    return sourceStr;
-};
+// String.prototype.replaceAll = function (targetStr, newStr) {
+//     var sourceStr = this.valueOf();
+//     while (sourceStr.indexOf(targetStr) !== -1) {
+//         sourceStr = sourceStr.replace(targetStr, newStr);
+//     }
+//     return sourceStr;
+// };
 
 
-Array.prototype.removeRepeatAttr = function () {
-    var tmp = {},
-        b = [],
-        a = this;
-    for (var i = 0; i < a.length; i++) {
-        if (!tmp[a[i].car_vinno]) {
-            tmp[a[i].car_vinno] = !0;
-        } else {
-            a.splice(i, 1);
-        }
-    }
-    ;
-};
+// Array.prototype.removeRepeatAttr = function () {
+//     var tmp = {},
+//         b = [],
+//         a = this;
+//     for (var i = 0; i < a.length; i++) {
+//         if (!tmp[a[i].car_vinno]) {
+//             tmp[a[i].car_vinno] = !0;
+//         } else {
+//             a.splice(i, 1);
+//         }
+//     }
+//     ;
+// };
 
-Array.prototype.removeRepeatAttr_All = function (str) {
-    var tmp = {},
-        b = [],
-        a = this;
-    for (var i = 0; i < a.length; i++) {
-        if (!tmp[a[i][str]]) {
-            tmp[a[i][str]] = !0;
-        } else {
-            a.splice(i, 1);
-        }
-    }
-    ;
-};
+// Array.prototype.removeRepeatAttr_All = function (str) {
+//     var tmp = {},
+//         b = [],
+//         a = this;
+//     for (var i = 0; i < a.length; i++) {
+//         if (!tmp[a[i][str]]) {
+//             tmp[a[i][str]] = !0;
+//         } else {
+//             a.splice(i, 1);
+//         }
+//     }
+//     ;
+// };
 
 
-Array.prototype.indexOf = function (val) {
-    for (var i = 0; i < this.length; i++) {
-        if (this[i] == val) return i;
-    }
-    return -1;
-};
+// Array.prototype.indexOf = function (val) {
+//     for (var i = 0; i < this.length; i++) {
+//         if (this[i] == val) return i;
+//     }
+//     return -1;
+// };
 
-Array.prototype.remove = function (val) {
-    var index = this.indexOf(val);
-    if (index > -1) {
-        this.splice(index, 1);
-    }
-};
+// Array.prototype.remove = function (val) {
+//     var index = this.indexOf(val);
+//     if (index > -1) {
+//         this.splice(index, 1);
+//     }
+// };
 
 /**
  * 从对象数组中删除属性为objPropery，值为objValue元素的对象
@@ -965,26 +966,26 @@ function getzf(num) {
 // 限制只能输入数字
 // </summary>
 // ----------------------------------------------------------------------
-$.fn.onlyNum = function () {
-    $(this).keypress(function (event) {
-        var eventObj = event || e;
-        var keyCode = eventObj.keyCode || eventObj.which;
-        if ((keyCode >= 48 && keyCode <= 57))
-            return true;
-        else
-            return false;
-    }).focus(function () {
-        //禁用输入法
-        this.style.imeMode = 'disabled';
-    }).bind("paste", function () {
-        //获取剪切板的内容
-        var clipboard = window.clipboardData.getData("Text");
-        if (/^\d+$/.test(clipboard))
-            return true;
-        else
-            return false;
-    });
-};
+// $.fn.onlyNum = function () {
+//     $(this).keypress(function (event) {
+//         var eventObj = event || e;
+//         var keyCode = eventObj.keyCode || eventObj.which;
+//         if ((keyCode >= 48 && keyCode <= 57))
+//             return true;
+//         else
+//             return false;
+//     }).focus(function () {
+//         //禁用输入法
+//         this.style.imeMode = 'disabled';
+//     }).bind("paste", function () {
+//         //获取剪切板的内容
+//         var clipboard = window.clipboardData.getData("Text");
+//         if (/^\d+$/.test(clipboard))
+//             return true;
+//         else
+//             return false;
+//     });
+// };
 
 
 // ----------------------------------------------------------------------
@@ -992,48 +993,48 @@ $.fn.onlyNum = function () {
 // 限制只能输入字母
 // </summary>
 // ----------------------------------------------------------------------
-$.fn.onlyAlpha = function () {
-    $(this).keypress(function (event) {
-        var eventObj = event || e;
-        var keyCode = eventObj.keyCode || eventObj.which;
-        if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 97 && keyCode <= 122))
-            return true;
-        else
-            return false;
-    }).focus(function () {
-        this.style.imeMode = 'disabled';
-    }).bind("paste", function () {
-        var clipboard = window.clipboardData.getData("Text");
-        if (/^[a-zA-Z]+$/.test(clipboard))
-            return true;
-        else
-            return false;
-    });
-};
+// $.fn.onlyAlpha = function () {
+//     $(this).keypress(function (event) {
+//         var eventObj = event || e;
+//         var keyCode = eventObj.keyCode || eventObj.which;
+//         if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 97 && keyCode <= 122))
+//             return true;
+//         else
+//             return false;
+//     }).focus(function () {
+//         this.style.imeMode = 'disabled';
+//     }).bind("paste", function () {
+//         var clipboard = window.clipboardData.getData("Text");
+//         if (/^[a-zA-Z]+$/.test(clipboard))
+//             return true;
+//         else
+//             return false;
+//     });
+// };
 
 // ----------------------------------------------------------------------
 // <summary>
 // 限制只能输入数字和字母
 // </summary>
 // ----------------------------------------------------------------------
-$.fn.onlyNumAlpha = function () {
-    $(this).keypress(function (event) {
-        var eventObj = event || e;
-        var keyCode = eventObj.keyCode || eventObj.which;
-        if ((keyCode >= 48 && keyCode <= 57) || (keyCode >= 65 && keyCode <= 90) || (keyCode >= 97 && keyCode <= 122))
-            return true;
-        else
-            return false;
-    }).focus(function () {
-        this.style.imeMode = 'disabled';
-    }).bind("paste", function () {
-        var clipboard = window.clipboardData.getData("Text");
-        if (/^(\d|[a-zA-Z])+$/.test(clipboard))
-            return true;
-        else
-            return false;
-    });
-};
+// $.fn.onlyNumAlpha = function () {
+//     $(this).keypress(function (event) {
+//         var eventObj = event || e;
+//         var keyCode = eventObj.keyCode || eventObj.which;
+//         if ((keyCode >= 48 && keyCode <= 57) || (keyCode >= 65 && keyCode <= 90) || (keyCode >= 97 && keyCode <= 122))
+//             return true;
+//         else
+//             return false;
+//     }).focus(function () {
+//         this.style.imeMode = 'disabled';
+//     }).bind("paste", function () {
+//         var clipboard = window.clipboardData.getData("Text");
+//         if (/^(\d|[a-zA-Z])+$/.test(clipboard))
+//             return true;
+//         else
+//             return false;
+//     });
+// };
 
 
 const sortby = (attr, rev) => {

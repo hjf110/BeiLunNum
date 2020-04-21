@@ -41,7 +41,7 @@ body {
     line-height: 50px;
     font-family: 'Microsoft YaHei', 'Microsoft YaHei UI';
     color: white;
-    z-index: 9;
+    z-index: 444444;
 }
 .top2{
     display: none;
@@ -58,7 +58,7 @@ body {
     line-height: 41px;
     font-family: 'Microsoft YaHei', 'Microsoft YaHei UI';
     color: white;
-    z-index: 9;
+    z-index: 444444;
     background: #161C40;
     box-shadow: -1px 0px 5px 5px #161c40;
 }
@@ -143,7 +143,7 @@ body {
     left: -15px;
     background: url(../../static/js/index/img/right_right.png) no-repeat;
     cursor: pointer;
-    z-index: 9;
+    z-index: 444444;
 }
 
 .right_left {
@@ -154,7 +154,7 @@ body {
     right: 1%;
     background: url(../../static/js/index/img/right_left.png) no-repeat;
     cursor: pointer;
-    z-index: 9;
+    z-index: 444444;
 
 }
 
@@ -166,7 +166,7 @@ body {
     right: -15px;
     background: url(../../static/js/index/img/right_left.png) no-repeat;
     cursor: pointer;
-    z-index: 9;
+    z-index: 444444;
 }
 
 .left_left {
@@ -177,7 +177,7 @@ body {
     left: 1%;
     background: url(../../static/js/index/img/right_right.png) no-repeat;
     cursor: pointer;
-    z-index: 9;
+    z-index: 444444;
 
 }
 
@@ -189,7 +189,7 @@ body {
     left: 1%;
     background: url(../../static/js/index/img/right_right.png) no-repeat;
     cursor: pointer;
-    z-index: 9;
+    z-index: 444444;
 
 }
 
@@ -215,6 +215,7 @@ body {
     min-height: 200px;
     background-color: #161c40;
     opacity: 0.8;
+    z-index: 444444;
     box-shadow: -1px 0px 5px 5px #161c40;
 }
 
@@ -364,7 +365,7 @@ body {
     position: absolute;
     left: 0;
     top: 0;
-    z-index: 3;
+    z-index: 444444;
     width: 100%;
     height: 100%;
     display: flex;
@@ -379,7 +380,7 @@ body {
     position: absolute;
     left: 0;
     top: 0;
-    z-index: 2;
+    z-index: 444444;
     width: 100%;
     height: 100%;
     -webkit-transform: translate(0, 100%);
