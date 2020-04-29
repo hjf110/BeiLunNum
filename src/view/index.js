@@ -6,8 +6,14 @@ require(["jsmap"], () => {
         el: "#app",
         data() {
             return {
+                type: {
+                    zhong_bu: [],
+                    zhong_hang: [],
+                },
                 selSetBaseLayer: '电子地图_天地图_浙江', //切换卫星图和电子图
                 keyWord: "", //关键字
+                keyWord2: "", //部门类型
+                keyWord3: "", //行业类型
                 infoList: [],
                 layerIndex: "",
                 ispc: true,
@@ -643,7 +649,9 @@ require(["jsmap"], () => {
                         }
                     });
                 } else { //关闭
-                    layer.close(_this.layerIndex);
+                    if (_this.layerIndex) {
+                        layer.close(_this.layerIndex);
+                    }
                 }
             },
             // 转换坐标
@@ -669,7 +677,7 @@ require(["jsmap"], () => {
                 console.log(lngStr, "+++++++", lng, "-----", lat, "-------------")
                 return [lng, lat]
             },
-            getIcon() {
+            getIcon(val) {
                 let cc = this.clickType;
                 let a;
                 if (cc == "Whqyxx") {
@@ -677,85 +685,94 @@ require(["jsmap"], () => {
                 } else if (cc == "Bzazcs") {
                     a = "../../static/img/img_4.png";
                 } else if (cc == "Dzzhxx") {
-                    a = "../../static/img/img_8.png";
+                    // a = "../../static/img/img_8.png";
+                    if (val === '001') {
+                        a = "../../static/img/img_x_1.png";
+                    } else if (val === '002') {
+                        a = "../../static/img/img_x_2.png";
+                    } else if (val === '003') {
+                        a = "../../static/img/img_x_3.png";
+                    } else if (val === '004') {
+                        a = "../../static/img/img_x_4.png";
+                    } else {
+                        a = "../../static/img/img_x_1.png";
+                    }
+
+
+
                 } else if (cc == "Bwdxxp") {
                     a = "../../static/img/img_7.png";
                 } else if (cc == "Jydwxx") {
                     a = "../../static/img/img_6.png";
                 } else if (cc == "Slfhsj") {
-                    a = "../../static/img/img_5.png";
+                    // a = "../../static/img/img_5.png";
+                    if (val === '001') {
+                        a = "../../static/img/img_s_1.png";
+                    } else if (val === '002') {
+                        a = "../../static/img/img_s_2.png";
+                    } else {
+                        a = "../../static/img/img_s_2.png";
+                    }
+
+
+
+
+
                 } else if (cc == "Zdqyxx") {
-                    a = "../../static/img/img_5.png";
+                    if (val === '001') {
+                        a = "../../static/img/img_z_1.png";
+                    } else if (val === '002') {
+                        a = "../../static/img/img_z_2.png";
+                    } else if (val === '003') {
+                        a = "../../static/img/img_z_3.png";
+                    } else if (val === '004') {
+                        a = "../../static/img/img_z_4.png";
+                    } else {
+                        a = "../../static/img/img_z_1.png";
+                    }
+
                 }
                 return a;
             },
             toClickType(type, e, idx) {
-                // this.closeAndOpen(false);
-                this.closeAndOpen(true);
+                this.closeAndOpen(false);
+                // this.closeAndOpen(true);
                 $(".menu_blue_right").removeClass().addClass("menu_yellow_right");
                 this.setting.clickType = idx;
                 e.target.className = "menu_blue_right";
                 this.clickType = type;
                 //先刷新站点
                 this.pushClearPoint();
+                this.map.centerAndZoom(new JSMap.Point(121.8603516, 29.8790359), 10);
+                this.map.setMaxZoom(18)
+            },
+            clearIcon() {
+                this.infoList.forEach((item, idx) => {
+                    if (this.marker[idx]) this.marker[idx].setIcon(this.myIcon[idx]);
+                });
             },
             thisMarker(idx) {
                 let _this = this;
                 console.log(idx);
-                let point = _this.marker[idx].point;
-                console.log(point);
+                let point = _this.marker[idx]._latlng;
+                console.log(point.lng, point.lat);
                 console.log(_this.marker[idx]);
+                this.clearIcon();
 
+                //pLngLat = new JSMap.Point(point.lng, point.lat);
 
+                // this.setInfo(point);
+                // setTimeout(() => {
+                //     this.map.centerAndZoom(pLngLat, 30);
+                // }, 2000)
                 this.map.flyToLayer(_this.marker[idx]);
-                // _this.map.centerAndZoom(new BMap.Point(point.lng, point.lat), 12); //将点选的坐标设为中心
-                // setTimeout(() => {
-                //     _this.map.centerAndZoom(new BMap.Point(point.lng, point.lat), 40); //放大坐标点
-                // }, 1000);
-                // setTimeout(() => {
-                //     _this.map.centerAndZoom(new BMap.Point(point.lng, point.lat), 12); //视图复位
-                // }, 20000);
-
-                // var geolocation = new BMap.Geolocation();
-                // geolocation.getCurrentPosition(function(r){
-                //     if(this.getStatus() == BMAP_STATUS_SUCCESS){
-                //         // var mk = new BMap.Marker(r.point);
-                //         // map.addOverlay(mk);
-                //         // map.panTo(r.point);
-                //         alert('您的位置：'+r.point.lng+','+r.point.lat);
-
-
-                //         let driving = new BMap.DrivingRoute(  _this.map, {
-                //             renderOptions: {
-                //                 map:   _this.map,
-                //                 autoViewport: true
-                //             }
-                //         });
-                //         let start = new BMap.Point(r.point.lng, r.point.lat);
-                //         let end = new BMap.Point(point.lng,point.lat);
-                //         driving.search(start, end);
+                var icon1 = JSMap.IconPulse({ iconSize: [5, 5], color: '#ff0000', fillColor: '#ff0000' });
+                if (_this.marker[idx]) {
+                    _this.marker[idx].setIcon(icon1);
+                }
 
 
 
-
-
-
-
-
-                //     }
-                //     else {
-                //         alert('failed'+this.getStatus());
-                //     }
-                // },{enableHighAccuracy: true})
-
-                // $.each(_this.marker, (idx, obj) => {
-                //     obj.setAnimation(null);
-                // });
-
-                // _this.marker[idx].setAnimation(BMAP_ANIMATION_BOUNCE);
-                // setTimeout(() => {
-                //     _this.marker[idx].setAnimation(null);
-                // }, 20000);
 
             },
             //显示与去掉站点
@@ -818,7 +835,7 @@ require(["jsmap"], () => {
                             }
 
 
-
+                            let typeVal = '';
                             switch (cccc) {
                                 case "Whqyxx":
                                     _this.infoList.push({ name: obj.QYJC, index: idx });
@@ -830,16 +847,20 @@ require(["jsmap"], () => {
                                     _this.infoList.push({ name: obj.WZ, index: idx });
                                     break;
                                 case "Dzzhxx":
-                                    _this.infoList.push({ name: obj.WZ, index: idx });
+                                    _this.infoList.push({ name: obj.WZ, index: idx, type: obj.YHLX });
+                                    typeVal = obj.YHLX;
+
                                     break;
                                 case "Slfhsj":
-                                    _this.infoList.push({ name: obj.MC, index: idx });
+                                    _this.infoList.push({ name: obj.MC, index: idx, type: obj.TYPE });
+                                    typeVal = obj.TYPE;
                                     break;
                                 case "Jydwxx":
                                     _this.infoList.push({ name: obj.DWMC, index: idx });
                                     break;
                                 case "Zdqyxx":
-                                    _this.infoList.push({ name: obj.NAME, index: idx });
+                                    _this.infoList.push({ name: obj.NAME, index: idx, type: obj.FXDJ, bu: obj.GLBM, hang: obj.TYPE });
+                                    typeVal = obj.FXDJ;
                                     break;
                                 default:
                                     break;
@@ -870,11 +891,8 @@ require(["jsmap"], () => {
 
                             // _this.marker[idx].setAnimation(BMAP_ANIMATION_DROP);
 
-                            let iconGet = _this.getIcon()
-                            _this.myIcon[idx] = new JSMap.Icon(iconGet, new JSMap.Size(30, 40), {
-                                anchor: new JSMap.Size(13, 42),
-                                imageSize: new JSMap.Size(30, 40)
-                            });
+                            let iconGet = _this.getIcon(typeVal);
+                            _this.myIcon[idx] = new JSMap.Icon(iconGet, new JSMap.Size(30, 40));
                             //自定义的icon图标
                             let icon = new JSMap.IconMarker({
                                 icon: 'fa-university', //icon名称参考：http://www.fontawesome.com.cn/faicons/
@@ -883,7 +901,7 @@ require(["jsmap"], () => {
                                 prefix: 'fa',
                                 extraClasses: 'fa-spin' //让图标旋转
                             });
-                            _this.marker[idx] = new JSMap.Marker(new JSMap.Point(bb[0], bb[1]), { icon: _this.myIcon[idx] });
+                            _this.marker[idx] = new JSMap.Marker(new JSMap.Point(bb[0] ? bb[0] : 0, bb[1] ? bb[1] : 0), { icon: _this.myIcon[idx] });
                             //marker4.bindPopup("<font size=5>粉色点");
                             map_search.addOverlay(_this.marker[idx]);
 
@@ -1346,6 +1364,24 @@ require(["jsmap"], () => {
 
 
                 }, err => {})
+            },
+            setInfo({ lng, lat }) {
+                var sContent = "在这里";
+                // map = new T.Map("mapDiv");
+                pLngLat = new JSMap.Point(lng, lat);
+                // map.centerAndZoom(pLngLat, zoom);
+                var infoWindow = new JSMap.InfoWindow(sContent);
+                this.map.openInfoWindow(infoWindow, pLngLat); //开启信息窗口
+                document.getElementById("result").innerHTML = "信息窗口的内容是：<br />" + infoWindow.getContent();
+            },
+            getType(name, setName) {
+                ajaxSubmit({ FIELD_tableName: name }, Api.type, "get", res => {
+                    console.log('获取类型-------', res);
+                    this.type[setName] = res.rows;
+                }, err => {
+
+                    _this.$message.success(err);
+                });
             }
 
 
@@ -1372,18 +1408,30 @@ require(["jsmap"], () => {
             filterItems() {
 
                 let reg = new RegExp(this.keyWord);
-
+                let reg2 = new RegExp(this.keyWord2);
+                let reg3 = new RegExp(this.keyWord3);
+                let list = this.infoList;
                 if (this.keyWord) {
-                    return this.infoList.filter(item => item.name.match(reg))
-                } else {
-                    return this.infoList
+                    list = this.infoList.filter(item => item.name.match(reg))
+                }
+                if (this.keyWord2) {
+                    list = list.filter(item => item.bu.match(reg2))
+                }
+                if (this.keyWord3) {
+                    list = list.filter(item => item.hang.match(reg3))
                 }
 
-
+                return list
             }
 
         },
         mounted() {
+            this.getType('dm_blyjsb_bmgl', 'zhong_bu');
+            this.getType('dm_blyjsb_hylx', 'zhong_hang');
+
+
+
+
             const _this = this;
             // _this.closeAndOpen(true);
             // var map_search = new BMap.Map("container_search", {
@@ -1419,6 +1467,10 @@ require(["jsmap"], () => {
             var map_search = JSMap.Map("container_search", { mapType: "电子地图_天地图_浙江" });
             map_search.centerAndZoom(new JSMap.Point(121.8603516, 29.8790359), 10);
             map_search.setMaxZoom(18)
+            //创建对象
+            // var ctrl = new JSMap.Control.MapType();
+            // //添加控件
+            // map_search.addControl(ctrl);
             map_search.removeAllControl()
             this.map = map_search;
 

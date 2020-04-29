@@ -16,7 +16,7 @@
 
 //正式环境
 var host = "https://www.blszyj.com";
-var baseURL = host +"/";
+var baseURL = host + "/";
 
 
 
@@ -26,8 +26,9 @@ var baseURL = host +"/";
 //接口管理
 var Api = {
     Log: true, //全局console的开启和关闭
-    typeList:baseURL +"jfV5blyj/api/data_list",
-    ddConfig:baseURL +"jfV5blyj/dingdingJQ_getParamJSAPI"
+    typeList: baseURL + "jfV5blyj/api/data_list",
+    ddConfig: baseURL + "jfV5blyj/dingdingJQ_getParamJSAPI",
+    type: baseURL + "jfV5blyj/api/data_listAllCache"
 };
 
 
