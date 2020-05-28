@@ -707,7 +707,7 @@ require(["jsmap"], () => {
                 } else if (cc == "Slfhsj") {
                     // a = "../../static/img/img_5.png";
                     if (val === '001') {
-                        a = "../../static/img/img_s_1.png";
+                        a = "../../static/img/img_s_1.jpg";
                     } else if (val === '002') {
                         a = "../../static/img/img_s_2.png";
                     } else {
@@ -807,31 +807,31 @@ require(["jsmap"], () => {
                             let bb = "";
                             let cccc = _this.clickType;
                             if (cccc == "Whqyxx") {
-                                aa = coordtransform.wgs84togcj02(obj.WZJD, obj.WZWD);
-                                // bb = coordtransform.gcj02tobd09(aa[0], aa[1]);
-                                bb = [obj.WZJD, obj.WZWD];
+                                aa = coordtransform.bd09togcj02(obj.WZJD, obj.WZWD);
+                                bb = coordtransform.gcj02towgs84(aa[0], aa[1]);
+                                // bb = [obj.WZJD, obj.WZWD];
                             } else if (cccc == "Bzazcs") {
                                 let dd = _this.zbChange(obj.JD, obj.WD);
-                                aa = coordtransform.wgs84togcj02(dd[0], dd[1]);
-                                // bb = coordtransform.gcj02tobd09(aa[0], aa[1]);
-                                bb = [dd[0], dd[1]];
+                                aa = coordtransform.bd09togcj02(dd[0], dd[1]);
+                                bb = coordtransform.gcj02towgs84(aa[0], aa[1]);
+                                // bb = [dd[0], dd[1]];
                             } else if (cccc == "Bwdxxp" || cccc == "Dzzhxx") {
                                 let dd = _this.zbChange(obj.DJ, obj.BW);
-                                aa = coordtransform.wgs84togcj02(dd[0], dd[1]);
-                                // bb = coordtransform.gcj02tobd09(aa[0], aa[1]);
-                                bb = [dd[0], dd[1]];
+                                aa = coordtransform.bd09togcj02(dd[0], dd[1]);
+                                bb = coordtransform.gcj02towgs84(aa[0], aa[1]);
+                                // bb = [dd[0], dd[1]];
                             } else if (cccc == "Slfhsj") {
-                                aa = coordtransform.wgs84togcj02(obj.JD, obj.WD);
-                                // bb = coordtransform.gcj02tobd09(aa[0], aa[1]);
+                                // aa = coordtransform.bd09togcj02(obj.JD, obj.WD);
+                                // bb = coordtransform.gcj02towgs84(aa[0], aa[1]);
                                 bb = [obj.JD, obj.WD]
                             } else if (cccc == "Jydwxx") {
-                                aa = coordtransform.wgs84togcj02(obj.WD, obj.JD);
-                                // bb = coordtransform.gcj02tobd09(aa[0], aa[1]);
-                                bb = [obj.JD, obj.WD]
+                                aa = coordtransform.bd09togcj02(obj.JD, obj.WD);
+                                bb = coordtransform.gcj02towgs84(aa[0], aa[1]);
+                                // bb = [obj.JD, obj.WD]
                             } else if (cccc == "Zdqyxx") {
-                                aa = coordtransform.wgs84togcj02(obj.WD, obj.JD);
-                                // bb = coordtransform.gcj02tobd09(aa[0], aa[1]);
-                                bb = [obj.JD, obj.WD]
+                                aa = coordtransform.bd09togcj02(obj.JD, obj.WD);
+                                bb = coordtransform.gcj02towgs84(aa[0], aa[1]);
+                                // bb = [obj.JD, obj.WD]
                             }
 
 
@@ -892,7 +892,11 @@ require(["jsmap"], () => {
                             // _this.marker[idx].setAnimation(BMAP_ANIMATION_DROP);
 
                             let iconGet = _this.getIcon(typeVal);
-                            _this.myIcon[idx] = new JSMap.Icon(iconGet, new JSMap.Size(30, 40));
+                            if (cccc === 'Slfhsj') {
+                                _this.myIcon[idx] = new JSMap.Icon(iconGet, new JSMap.Size(20, 25));
+                            } else {
+                                _this.myIcon[idx] = new JSMap.Icon(iconGet, new JSMap.Size(30, 40));
+                            }
                             //自定义的icon图标
                             let icon = new JSMap.IconMarker({
                                 icon: 'fa-university', //icon名称参考：http://www.fontawesome.com.cn/faicons/
